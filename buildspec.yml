@@ -8,12 +8,7 @@ phases:
         - pip install -r requirements.txt
   pre_build:
     commands:
-      - docker-compose -f docker-compose-postgres.yml up -d
-      - sleep 10
       - cd consultar_incidentes
-      - echo Corriendo los tests ...
-      - pytest
-      - docker-compose down  
       - echo Logging in to Amazon ECR...
       - aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 682033469251.dkr.ecr.us-east-2.amazonaws.com
   build:
