@@ -12,13 +12,13 @@ phases:
       - |
         if git diff --name-only $CODEBUILD_RESOLVED_SOURCE_VERSION | grep 'consultar_incidentes/'; then
           export BUILD_MS1=true
-          echo Logging in to Amazon ECR...
         fi
       - |
         if git diff --name-only $CODEBUILD_RESOLVED_SOURCE_VERSION | grep 'crear_incidentes/'; then
           export BUILD_MS2=true
-          echo Logging in to Amazon ECR 2...
         fi
+
+      - echo Logging in to Amazon ECR...
       - aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 682033469251.dkr.ecr.us-east-2.amazonaws.com
   build:
     commands:
