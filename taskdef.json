@@ -1,0 +1,48 @@
+{
+    "executionRoleArn": "arn:aws:iam::682033469251:role/ecsTaskExecutionRole",
+    "containerDefinitions": [
+      {
+        "portMappings": [
+          {
+            "hostPort": 80,
+            "protocol": "tcp",
+            "containerPort": 8001
+          }
+        ],
+
+        "image": "<IMAGE1_NAME>",
+        "essential": true,
+        "environment": [
+          {
+              "name": "DB_NAME",
+              "value": "postgres"
+          },
+          {
+              "name": "DB_HOST",
+              "value": "database-abcall-1.c96u6ei86pwz.us-east-2.rds.amazonaws.com"
+          },
+          {
+              "name": "DB_PORT",
+              "value": "5432"
+          },
+          {
+              "name": "DB_USER",
+              "value": "postgres"
+          },
+          {
+              "name": "DB_PASSWORD",
+              "value": "123456789"
+          }
+      ],
+        "name": "Container-app-blacklist"
+      }
+    ],
+
+    "requiresCompatibilities": [
+      "FARGATE"
+    ],
+    "networkMode": "awsvpc",
+    "cpu": "512",
+    "memory": "1024",
+    "family": "Task-app-blacklist"
+  }

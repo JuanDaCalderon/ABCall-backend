@@ -1,0 +1,50 @@
+version: 0.2
+
+phases:
+  install:
+      runtime-versions:
+        python: 3.9
+      commands:
+        - pip install -r requirements.txt
+  pre_build:
+    commands:
+      - docker-compose -f docker-compose-postgres.yml up -d
+      - sleep 10
+      - cd consultar_incidentes
+      - echo Corriendo los tests ...
+      - pytest
+      - docker-compose down  
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 682033469251.dkr.ecr.us-east-2.amazonaws.com
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image... 
+      - docker build -t abcallproyectofinal1 .
+      - docker tag abcallproyectofinal1:latest 682033469251.dkr.ecr.us-east-2.amazonaws.com/abcallproyectofinal1:latest
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker image...
+      - docker push 682033469251.dkr.ecr.us-east-2.amazonaws.com/abcallproyectofinal1:latest
+      - echo Writing Image Definitions file...
+      - printf '[{"name":"Container-app-blacklist","682033469251.dkr.ecr.us-east-2.amazonaws.com/abcallproyectofinal1:latest"}]' > imagedefinitions.json
+      - echo moviendo el archivo imagedefinitions.json ...
+      - mv imagedefinitions.json ../imagedefinitions.json
+      - printf '{"ImageURI":"682033469251.dkr.ecr.us-east-2.amazonaws.com/abcallproyectofinal1:latest"}' > imageDetail.json
+      - echo moviendo el archivo imageDetail.json ...
+      - mv imageDetail.json ../imageDetail.json
+      - cat ../imagedefinitions.json 
+artifacts:
+  files:
+    - '**/*'
+    - imagedefinitions.json
+    - imageDetail.json
+  secondary-artifacts:
+    DefinitionArtifact:
+      files:
+        - appspec.yaml
+        - taskdef.json
+    ImageArtifact:
+      files:
+        - imageDetail.json
