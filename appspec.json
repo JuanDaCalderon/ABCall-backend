@@ -8,7 +8,7 @@
             "TaskDefinition": "<TASK_DEFINITION>",
             "LoadBalancerInfo": {
               "ContainerName": "Container-app-abcall",
-              "ContainerPort": 80
+              "ContainerPort": 8001
             }
           }
         }
