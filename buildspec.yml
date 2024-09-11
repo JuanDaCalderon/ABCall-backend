@@ -57,8 +57,8 @@ phases:
           echo "Pushing crear_incidentes to ECR..."
           docker push 682033469251.dkr.ecr.us-east-2.amazonaws.com/abcallproyectofinal1crear:latest
           echo Writing Image Definitions file...
-          printf '[{"name":"Container-app-abcall-crear","682033469251.dkr.ecr.us-east-2.amazonaws.com/abcallproyectofinal1crear:latest"}]' > imagedefinitions2.json
-          printf '{"ImageURI":"682033469251.dkr.ecr.us-east-2.amazonaws.com/abcallproyectofinal1crear:latest"}' > imageDetail2.json
+          printf '[{"name":"Container-app-abcall-crear","682033469251.dkr.ecr.us-east-2.amazonaws.com/abcallproyectofinal1crear:latest"}]' > imagedefinitions.json
+          printf '{"ImageURI":"682033469251.dkr.ecr.us-east-2.amazonaws.com/abcallproyectofinal1crear:latest"}' > imageDetail.json
           cat ../imagedefinitions2.json  
         fi
 artifacts:
@@ -66,8 +66,6 @@ artifacts:
     - '**/*'
     - imagedefinitions.json
     - imageDetail.json
-    - imagedefinitions2.json
-    - imageDetail2.json
   secondary-artifacts:
     DefinitionArtifact:
       files:
@@ -76,4 +74,3 @@ artifacts:
     ImageArtifact:
       files:
         - imageDetail.json
-        - imageDetail2.json
