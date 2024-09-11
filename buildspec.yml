@@ -8,33 +8,66 @@ phases:
         - pip install -r requirements.txt
   pre_build:
     commands:
-      - cd consultar_incidentes
-      - echo Logging in to Amazon ECR...
+      - echo Checking which microservices need to be built...
+      - |
+        if git diff --name-only $CODEBUILD_RESOLVED_SOURCE_VERSION | grep 'consultar_incidentes/'; then
+          export BUILD_MS1=true
+          echo Logging in to Amazon ECR...
+        fi
+      - |
+        if git diff --name-only $CODEBUILD_RESOLVED_SOURCE_VERSION | grep 'crear_incidentes/'; then
+          export BUILD_MS2=true
+          echo Logging in to Amazon ECR 2...
+        fi
       - aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 682033469251.dkr.ecr.us-east-2.amazonaws.com
   build:
     commands:
       - echo Build started on `date`
-      - echo Building the Docker image... 
-      - docker build -t abcallproyectofinal1 .
-      - docker tag abcallproyectofinal1:latest 682033469251.dkr.ecr.us-east-2.amazonaws.com/abcallproyectofinal1:latest
+      - |
+        if [ "$BUILD_MS1" == "true" ]; then
+          echo "Building consultar_incidentes ..."
+          cd consultar_incidentes
+          docker build -t abcallproyectofinal1 .
+          docker tag abcallproyectofinal1:latest 682033469251.dkr.ecr.us-east-2.amazonaws.com/abcallproyectofinal1:latest
+          cd ..
+        fi
+      - |
+        if [ "$BUILD_MS2" == "true" ]; then
+          echo "Building crear_incidentes ..."
+          cd crear_incidentes
+          docker build -t abcallproyectofinal1crear .
+          docker tag abcallproyectofinal1crear:latest 682033469251.dkr.ecr.us-east-2.amazonaws.com/abcallproyectofinal1crear:latest
+          cd ..
+        fi
   post_build:
     commands:
       - echo Build completed on `date`
-      - echo Pushing the Docker image...
-      - docker push 682033469251.dkr.ecr.us-east-2.amazonaws.com/abcallproyectofinal1:latest
-      - echo Writing Image Definitions file...
-      - printf '[{"name":"Container-app-blacklist","682033469251.dkr.ecr.us-east-2.amazonaws.com/abcallproyectofinal1:latest"}]' > imagedefinitions.json
-      - echo moviendo el archivo imagedefinitions.json ...
-      - mv imagedefinitions.json ../imagedefinitions.json
-      - printf '{"ImageURI":"682033469251.dkr.ecr.us-east-2.amazonaws.com/abcallproyectofinal1:latest"}' > imageDetail.json
-      - echo moviendo el archivo imageDetail.json ...
-      - mv imageDetail.json ../imageDetail.json
-      - cat ../imagedefinitions.json 
+      - echo "Post-build phase"
+      - |
+        if [ "$BUILD_MS1" == "true" ]; then
+          echo "Pushing consultar_incidentes to ECR..."
+          docker push 682033469251.dkr.ecr.us-east-2.amazonaws.com/abcallproyectofinal1:latest
+          echo Writing Image Definitions file...
+          printf '[{"name":"Container-app-abcall","682033469251.dkr.ecr.us-east-2.amazonaws.com/abcallproyectofinal1:latest"}]' > imagedefinitions.json
+          printf '{"ImageURI":"682033469251.dkr.ecr.us-east-2.amazonaws.com/abcallproyectofinal1:latest"}' > imageDetail.json
+          cat ../imagedefinitions.json  
+        fi
+      - |
+        if [ "$BUILD_MS2" == "true" ]; then
+          echo "Pushing crear_incidentes to ECR..."
+          docker push 682033469251.dkr.ecr.us-east-2.amazonaws.com/abcallproyectofinal1crear:latest
+          echo Writing Image Definitions file...
+          printf '[{"name":"Container-app-abcall-crear","682033469251.dkr.ecr.us-east-2.amazonaws.com/abcallproyectofinal1crear:latest"}]' > imagedefinitions2.json
+          printf '{"ImageURI":"682033469251.dkr.ecr.us-east-2.amazonaws.com/abcallproyectofinal1crear:latest"}' > imageDetail2.json
+          cat ../imagedefinitions2.json  
+        fi
 artifacts:
   files:
     - '**/*'
     - imagedefinitions.json
     - imageDetail.json
+    - imagedefinitions2.json
+    - imageDetail2.json
   secondary-artifacts:
     DefinitionArtifact:
       files:
@@ -43,3 +76,4 @@ artifacts:
     ImageArtifact:
       files:
         - imageDetail.json
+        - imageDetail2.json

@@ -12,6 +12,18 @@
             }
           }
         }
+      },
+      {
+        "TargetService": {
+          "Type": "AWS::ECS::Service",
+          "Properties": {
+            "TaskDefinition": "<TASK_DEFINITION>",
+            "LoadBalancerInfo": {
+              "ContainerName": "Container-app-abcall-crear",
+              "ContainerPort": 8000
+            }
+          }
+        }
       }
     ]
   }

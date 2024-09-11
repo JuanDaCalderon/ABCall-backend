@@ -35,6 +35,40 @@
           }
       ],
         "name": "Container-app-abcall"
+      },
+      {
+        "portMappings": [
+          {
+            "hostPort": 8000,
+            "protocol": "tcp",
+            "containerPort": 8000
+          }
+        ],
+        "image": "<IMAGE1_NAME>",
+        "essential": true,
+        "environment": [
+          {
+              "name": "DB_NAME",
+              "value": "postgres"
+          },
+          {
+              "name": "DB_HOST",
+              "value": "database-abcall-1.c96u6ei86pwz.us-east-2.rds.amazonaws.com"
+          },
+          {
+              "name": "DB_PORT",
+              "value": "5432"
+          },
+          {
+              "name": "DB_USER",
+              "value": "postgres"
+          },
+          {
+              "name": "DB_PASSWORD",
+              "value": "123456789"
+          }
+      ],
+        "name": "Container-app-abcall-crear"
       }
     ],
 
