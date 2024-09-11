@@ -1,0 +1,54 @@
+version: "3.7"
+
+services:
+  incidentes_db:
+    container_name: incidentes_db
+    image: postgres
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 2s
+      timeout: 5s
+      retries: 5
+    networks:
+    -  app_net
+  consultar_incidentes:
+    container_name: consultar_incidentes
+    build: ./consultar_incidentes
+    ports:
+      - 8001:8001
+    environment:
+      DB_USER: postgres
+      DB_PASSWORD: 123456
+      DB_HOST: incidentes_db
+      DB_PORT: 5432
+      DB_NAME: postgres
+    depends_on:
+      incidentes_db:
+        condition: service_healthy
+    networks:
+      - app_net
+  crear_incidentes:
+    container_name: crear_incidentes
+    build: ./crear_incidentes
+    ports:
+      - 8000:8000
+    environment:
+      DB_USER: postgres
+      DB_PASSWORD: 123456
+      DB_HOST: incidentes_db
+      DB_PORT: 5432
+      DB_NAME: postgres
+    depends_on:
+      incidentes_db:
+        condition: service_healthy
+    networks:
+      - app_net
+networks:
+  app_net:
+   driver: bridge
