@@ -34,7 +34,7 @@
               "value": "123456789"
           }
       ],
-        "name": "Container-app-blacklist"
+        "name": "Container-app-abcall"
       }
     ],
 
@@ -44,5 +44,5 @@
     "networkMode": "awsvpc",
     "cpu": "512",
     "memory": "1024",
-    "family": "Task-app-blacklist"
+    "family": "task-app-abcall"
   }
