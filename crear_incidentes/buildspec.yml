@@ -10,7 +10,7 @@ phases:
     commands:
       - cd crear_incidentes
       - echo Logging in to Amazon ECR...
-      - aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 682033469251.dkr.ecr.us-east-2.amazonaws.com
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 682033469251.dkr.ecr.us-east-1.amazonaws.com
   build:
     commands:
       - echo Build started on `date`

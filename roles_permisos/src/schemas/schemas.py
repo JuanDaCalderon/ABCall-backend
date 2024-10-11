@@ -8,11 +8,21 @@ class permiso(BaseModel):
     class Config:
         from_attributes = True
 
-class role(BaseModel):
-    nombre: Union[str, None] = None
-    permisos: Union[List[permiso], None] = None
+class permisoid(BaseModel):
+    id: int = None
     class Config:
         from_attributes = True
         
+class role(BaseModel):
+    nombre: Union[str, None] = None
+    class Config:
+        from_attributes = True
+        
+class roleSchema(BaseModel):
+    id: int = None
+    nombre: str = None
+    permisos: List[permisoid] = None
+    class Config:
+        from_attributes = True
 class PermisoUpdate(BaseModel):
-    permisos: List[permiso]
+    permisos: Union[List[permisoid], None] = None
