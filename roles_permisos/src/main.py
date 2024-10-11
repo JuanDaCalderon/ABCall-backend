@@ -1,3 +1,4 @@
+from typing import List
 from fastapi import Body, FastAPI, status, Depends
 from starlette.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -24,9 +25,18 @@ app.add_middleware(
 def root():
     return RedirectResponse(url="/docs/")
 
+@app.get("/roles", status_code=status.HTTP_200_OK)
+def getAllRoles(db: Session = Depends(database.get_db)):
+    roles:List[models.Role] = tasks.findAllRoles(db=db)
+    if not roles:
+        return utility.get_json_response('E404', 'No hay roles creados') 
+    else:
+        return [{"ID":new_role.ID,"NOMBRE":new_role.NOMBRE,"PERMISOS":new_role.PERMISOS} for new_role in roles]
+
 @app.get("/role/ping", status_code=status.HTTP_200_OK)
 def verify_health():
     return {"msg": "Pong"}
+
 
 @app.get("/role/{role_id}", status_code=status.HTTP_200_OK)
 def getRole(role_id:int, db: Session = Depends(database.get_db)):

@@ -22,6 +22,9 @@ def findRoleById(db: Session, role_id: schemas.role)->models.Role:
     role = db.query(models.Role).filter(models.Role.ID == role_id).first()
     return role if role else False
 
+def findAllRoles(db: Session):
+    roles = db.query(models.Role).all()
+    return roles if roles else False
 def createPermiso(db: Session, permiso: schemas.permiso) -> models.Permiso:
     permiso = models.Permiso(
         NOMBRE=permiso.nombre.lower(),
