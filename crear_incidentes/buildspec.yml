@@ -37,9 +37,10 @@ artifacts:
     - imageDetail.json
   secondary-artifacts:
     DefinitionArtifact:
+      base-directory: crear_incidentes 
       files:
-        - crear_incidentes/appspec.yaml
-        - crear_incidentes/taskdef.json
+        - appspec.yaml
+        - taskdef.json
     ImageArtifact:
       files:
         - imageDetail.json
