@@ -29,8 +29,6 @@ phases:
       - printf '{"ImageURI":"682033469251.dkr.ecr.us-east-1.amazonaws.com/abcallcrear:latest"}' > imageDetail.json
       - echo moviendo el archivo imageDetail.json ...
       - mv imageDetail.json ../imageDetail.json
-      - cp appspec.yaml ../appspec.yaml
-      - cp taskdef.json ../taskdef.json
       - cat ../imagedefinitions.json 
 artifacts:
   files:
