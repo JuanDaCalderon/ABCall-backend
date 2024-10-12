@@ -38,8 +38,8 @@ artifacts:
   secondary-artifacts:
     DefinitionArtifact:
       files:
-        - appspec.yaml
-        - taskdef.json
+        - crear_incidentes/appspec.yaml
+        - crear_incidentes/taskdef.json
     ImageArtifact:
       files:
         - imageDetail.json
