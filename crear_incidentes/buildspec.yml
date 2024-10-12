@@ -39,7 +39,7 @@ artifacts:
     DefinitionArtifact:
       base-directory: crear_incidentes
       files:
-        - appspec.yaml
+        - AppSpec.yaml
         - taskdef.json
     ImageArtifact:
       files:
