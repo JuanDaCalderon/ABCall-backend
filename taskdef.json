@@ -1,0 +1,195 @@
+{
+  "taskDefinitionArn": "arn:aws:ecs:us-east-1:682033469251:task-definition/task-app-abcall:1",
+  "containerDefinitions": [
+      {
+          "name": "Container-app-abcall-crear",
+          "image": "682033469251.dkr.ecr.us-east-1.amazonaws.com/abcallcrear",
+          "cpu": 0,
+          "portMappings": [
+              {
+                  "name": "container-app-abcall-crear-8000-tcp",
+                  "containerPort": 8000,
+                  "hostPort": 8000,
+                  "protocol": "tcp",
+                  "appProtocol": "http"
+              }
+          ],
+          "essential": true,
+          "environment": [
+              {
+                  "name": "DB_NAME",
+                  "value": "postgres"
+              },
+              {
+                  "name": "DB_HOST",
+                  "value": "database-abcall-1.c74i0uiy6i7h.us-east-1.rds.amazonaws.com"
+              },
+              {
+                  "name": "DB_PORT",
+                  "value": "5432"
+              },
+              {
+                  "name": "DB_USER",
+                  "value": "postgres"
+              },
+              {
+                  "name": "DB_PASSWORD",
+                  "value": "123456789"
+              }
+          ],
+          "environmentFiles": [],
+          "mountPoints": [],
+          "volumesFrom": [],
+          "ulimits": [],
+          "logConfiguration": {
+              "logDriver": "awslogs",
+              "options": {
+                  "awslogs-group": "/ecs/task-app-abcall",
+                  "mode": "non-blocking",
+                  "awslogs-create-group": "true",
+                  "max-buffer-size": "25m",
+                  "awslogs-region": "us-east-1",
+                  "awslogs-stream-prefix": "ecs"
+              },
+              "secretOptions": []
+          },
+          "systemControls": []
+      },
+      {
+          "name": "Container-app-abcall-consultar",
+          "image": "682033469251.dkr.ecr.us-east-1.amazonaws.com/abcallconsultar",
+          "cpu": 0,
+          "portMappings": [
+              {
+                  "name": "container-app-abcall-consultar-8001-tcp",
+                  "containerPort": 8001,
+                  "hostPort": 8001,
+                  "protocol": "tcp"
+              }
+          ],
+          "essential": true,
+          "environment": [
+              {
+                  "name": "DB_NAME",
+                  "value": "postgres"
+              },
+              {
+                  "name": "DB_HOST",
+                  "value": "database-abcall-1.c74i0uiy6i7h.us-east-1.rds.amazonaws.com"
+              },
+              {
+                  "name": "DB_PORT",
+                  "value": "5432"
+              },
+              {
+                  "name": "DB_USER",
+                  "value": "postgres"
+              },
+              {
+                  "name": "DB_PASSWORD",
+                  "value": "123456789"
+              }
+          ],
+          "environmentFiles": [],
+          "mountPoints": [],
+          "volumesFrom": [],
+          "systemControls": []
+      },
+      {
+          "name": "Container-app-abcall-roles",
+          "image": "682033469251.dkr.ecr.us-east-1.amazonaws.com/abcallroles",
+          "cpu": 0,
+          "portMappings": [
+              {
+                  "name": "container-app-abcall-roles-8002-tcp",
+                  "containerPort": 8002,
+                  "hostPort": 8002,
+                  "protocol": "tcp"
+              }
+          ],
+          "essential": true,
+          "environment": [
+              {
+                  "name": "DB_NAME",
+                  "value": "postgres"
+              },
+              {
+                  "name": "DB_HOST",
+                  "value": "database-abcall-1.c74i0uiy6i7h.us-east-1.rds.amazonaws.com"
+              },
+              {
+                  "name": "DB_PORT",
+                  "value": "5432"
+              },
+              {
+                  "name": "DB_USER",
+                  "value": "postgres"
+              },
+              {
+                  "name": "DB_PASSWORD",
+                  "value": "123456789"
+              }
+          ],
+          "environmentFiles": [],
+          "mountPoints": [],
+          "volumesFrom": [],
+          "systemControls": []
+      }
+  ],
+  "family": "task-app-abcall",
+  "taskRoleArn": "arn:aws:iam::682033469251:role/ecsTaskExecutionRole",
+  "executionRoleArn": "arn:aws:iam::682033469251:role/ecsTaskExecutionRole",
+  "networkMode": "awsvpc",
+  "revision": 1,
+  "volumes": [],
+  "status": "ACTIVE",
+  "requiresAttributes": [
+      {
+          "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+      },
+      {
+          "name": "ecs.capability.execution-role-awslogs"
+      },
+      {
+          "name": "com.amazonaws.ecs.capability.ecr-auth"
+      },
+      {
+          "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+      },
+      {
+          "name": "com.amazonaws.ecs.capability.docker-remote-api.1.28"
+      },
+      {
+          "name": "com.amazonaws.ecs.capability.task-iam-role"
+      },
+      {
+          "name": "ecs.capability.execution-role-ecr-pull"
+      },
+      {
+          "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+      },
+      {
+          "name": "ecs.capability.task-eni"
+      },
+      {
+          "name": "com.amazonaws.ecs.capability.docker-remote-api.1.29"
+      }
+  ],
+  "placementConstraints": [],
+  "compatibilities": [
+      "EC2",
+      "FARGATE"
+  ],
+  "requiresCompatibilities": [
+      "FARGATE"
+  ],
+  "cpu": "256",
+  "memory": "512",
+  "runtimePlatform": {
+      "cpuArchitecture": "X86_64",
+      "operatingSystemFamily": "LINUX"
+  },
+  "registeredAt": "2024-10-11T23:32:27.038Z",
+  "registeredBy": "arn:aws:iam::682033469251:root",
+  "tags": []
+}
