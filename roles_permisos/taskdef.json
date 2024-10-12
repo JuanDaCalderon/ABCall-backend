@@ -19,7 +19,7 @@
           },
           {
               "name": "DB_HOST",
-              "value": "database-abcall-1.c96u6ei86pwz.us-east-2.rds.amazonaws.com"
+              "value": "database-abcall-1.c74i0uiy6i7h.us-east-1.rds.amazonaws.com"
           },
           {
               "name": "DB_PORT",
@@ -42,7 +42,7 @@
       "FARGATE"
     ],
     "networkMode": "awsvpc",
-    "cpu": "512",
-    "memory": "1024",
+    "cpu": "256",
+    "memory": "512",
     "family": "task-app-abcall-roles"
   }

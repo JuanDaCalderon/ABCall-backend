@@ -16,17 +16,17 @@ phases:
       - echo Build started on `date`
       - echo Building the Docker image... 
       - docker build -t abcallroles .
-      - docker tag abcallroles:latest 682033469251.dkr.ecr.us-east-2.amazonaws.com/abcallroles:latest
+      - docker tag abcallroles:latest 682033469251.dkr.ecr.us-east-1.amazonaws.com/abcallroles:latest
   post_build:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker image...
-      - docker push 682033469251.dkr.ecr.us-east-2.amazonaws.com/abcallroles:latest
+      - docker push 682033469251.dkr.ecr.us-east-1.amazonaws.com/abcallroles:latest
       - echo Writing Image Definitions file...
-      - printf '[{"name":"Container-app-abcall-roles","682033469251.dkr.ecr.us-east-2.amazonaws.com/abcallroles:latest"}]' > imagedefinitions.json
+      - printf '[{"name":"Container-app-abcall-roles","682033469251.dkr.ecr.us-east-1.amazonaws.com/abcallroles:latest"}]' > imagedefinitions.json
       - echo moviendo el archivo imagedefinitions.json ...
       - mv imagedefinitions.json ../imagedefinitions.json
-      - printf '{"ImageURI":"682033469251.dkr.ecr.us-east-2.amazonaws.com/abcallroles:latest"}' > imageDetail.json
+      - printf '{"ImageURI":"682033469251.dkr.ecr.us-east-1.amazonaws.com/abcallroles:latest"}' > imageDetail.json
       - echo moviendo el archivo imageDetail.json ...
       - mv imageDetail.json ../imageDetail.json
       - cat ../imagedefinitions.json 
