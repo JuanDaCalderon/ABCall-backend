@@ -23,7 +23,7 @@ phases:
       - echo Pushing the Docker image...
       - docker push 682033469251.dkr.ecr.us-east-1.amazonaws.com/abcallcrear:latest
       - echo Writing Image Definitions file...
-      - printf '[{"name":"Container-app-abcall","682033469251.dkr.ecr.us-east-1.amazonaws.com/abcallcrear:latest"}]' > imagedefinitions.json
+      - printf '[{"name":"Container-app-abcall-crear","682033469251.dkr.ecr.us-east-1.amazonaws.com/abcallcrear:latest"}]' > imagedefinitions.json
       - echo moviendo el archivo imagedefinitions.json ...
       - mv imagedefinitions.json ../imagedefinitions.json
       - printf '{"ImageURI":"682033469251.dkr.ecr.us-east-1.amazonaws.com/abcallcrear:latest"}' > imageDetail.json
@@ -37,7 +37,7 @@ artifacts:
     - imageDetail.json
   secondary-artifacts:
     DefinitionArtifact:
-      base-directory: crear_incidentes 
+      base-directory: crear_incidentes
       files:
         - appspec.yaml
         - taskdef.json
