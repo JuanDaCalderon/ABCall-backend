@@ -39,7 +39,7 @@ artifacts:
     DefinitionArtifact:
       base-directory: crear_incidentes
       files:
-        - AppSpec.json
+        - appspec.json
         - taskdef.json
     ImageArtifact:
       files:
