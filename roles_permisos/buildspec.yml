@@ -30,6 +30,10 @@ phases:
       - echo moviendo el archivo imageDetail.json ...
       - mv imageDetail.json ../imageDetail.json
       - cat ../imagedefinitions.json 
+      - echo "TaskDefinition JSON"
+      - cp taskdef.json ../taskdef.json
+      - echo "Copying appspec.yaml"
+      - cp appspec.yaml ../appspec.yaml 
 artifacts:
   files:
     - '**/*'
@@ -37,6 +41,7 @@ artifacts:
     - imageDetail.json
   secondary-artifacts:
     DefinitionArtifact:
+      base-directory: roles_permisos
       files:
         - appspec.yaml
         - taskdef.json
