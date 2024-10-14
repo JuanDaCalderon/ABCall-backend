@@ -28,18 +28,21 @@ def root():
 def create(incidente: schemas.Incidentes = Body(default=None), db: Session = Depends(database.get_db)):
     if not incidente:
         return utility.get_json_response('E422', 'El body de la petición esta vacio')
-    elif not incidente.descripcion or not incidente.estado or not incidente.fechacreacion or not incidente.gestorabc or not incidente.cliente or not incidente.usuario or not incidente.comentarios:
+    elif not incidente.descripcion or not incidente.estado or not incidente.fechacreacion or not incidente.cliente or not incidente.usuario or not incidente.comentarios:
         return utility.get_json_response('E400', 'Todos los campos son obligatorios')
     else:
         new_incidente: models.Incidentes = tasks.create(db=db, incidente=incidente)
         return {
             "ID": new_incidente.ID,
-            "DESCRIPCION": new_incidente.DESCRIPCION,
-            "ESTADO": new_incidente.ESTADO,
-            "FECHACREACION": new_incidente.FECHACREACION,
-            "GESTORABC": new_incidente.GESTORABC,
             "CLIENTE": new_incidente.CLIENTE,
+            "FECHACREACION": new_incidente.FECHACREACION,
             "USUARIO": new_incidente.USUARIO,
+            "CORREO": new_incidente.CORREO,
+            "DIRECCION": new_incidente.DIRECCION,
+            "TELEFONO": new_incidente.TELEFONO,
+            "DESCRIPCION": new_incidente.DESCRIPCION,
+            "PRIORIDAD": new_incidente.PRIORIDAD,
+            "ESTADO": new_incidente.ESTADO,
             "COMENTARIOS": new_incidente.COMENTARIOS,
         }
 
