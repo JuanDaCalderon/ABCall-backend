@@ -7,7 +7,7 @@ from ..schemas import schemas
 
 def createRole(db: Session, role: schemas.role) -> models.Role:
     role = models.Role(
-        NOMBRE=role.nombre.lower(),
+        NOMBRE=role.NOMBRE.lower(),
     )
     db.add(role)
     db.commit()
@@ -27,8 +27,8 @@ def findAllRoles(db: Session):
     return roles if roles else False
 def createPermiso(db: Session, permiso: schemas.permiso) -> models.Permiso:
     permiso = models.Permiso(
-        NOMBRE=permiso.nombre.lower(),
-        ESTADO=permiso.estado
+        NOMBRE=permiso.NOMBRE.lower(),
+        ESTADO=permiso.ESTADO
     )
     db.add(permiso)
     db.commit()
@@ -44,7 +44,7 @@ def findPermisoById(db: Session, permiso_id:int)->models.Role:
     return permiso if permiso else False
 
 def associatePermisosToRole(db: Session,role: models.Role, permisos: schemas.PermisoUpdate) -> models.Role:
-    for permiso_data in permisos.permisos:
+    for permiso_data in permisos.PERMISOS:
         permiso = findPermisoById(db=db,permiso_id=permiso_data.id)
         permiso.ROLE_ID = role.ID
         db.add(permiso)  
