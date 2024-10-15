@@ -65,6 +65,22 @@ services:
         condition: service_healthy
     networks:
       - app_net
+  usuarios:
+    container_name: usuarios
+    build: ./usuarios
+    ports:
+      - 8003:8003
+    environment:
+      DB_USER: postgres
+      DB_PASSWORD: 123456
+      DB_HOST: incidentes_db
+      DB_PORT: 5432
+      DB_NAME: postgres
+    depends_on:
+      incidentes_db:
+        condition: service_healthy
+    networks:
+      - app_net
 networks:
   app_net:
    driver: bridge
