@@ -54,10 +54,10 @@ def getRole(role_id:int, db: Session = Depends(database.get_db)):
 def create(role: schemas.role = Body(default=None), db: Session = Depends(database.get_db)):
     if not role:
         return utility.get_json_response('E422', 'El body de la petición esta vacio')
-    elif not role.nombre:
+    elif not role.NOMBRE:
         return utility.get_json_response('E400', 'El nombre es obligatorio')
     
-    new_role1:models.Role = tasks.findRoleByName(db=db,role_name=role.nombre)
+    new_role1:models.Role = tasks.findRoleByName(db=db,role_name=role.NOMBRE)
     if new_role1:
         return utility.get_json_response('E400', 'El Role ya existe')
     else:
@@ -71,10 +71,10 @@ def create(role: schemas.role = Body(default=None), db: Session = Depends(databa
 def create(permiso: schemas.permiso = Body(default=None), db: Session = Depends(database.get_db)):
     if not permiso:
         return utility.get_json_response('E422', 'El body de la petición esta vacio')
-    elif not permiso.nombre or not permiso.estado:
+    elif not permiso.NOMBRE or not permiso.ESTADO:
         return utility.get_json_response('E400', 'El nombre y el estado es obligatorio')
     
-    new_permiso1:models.Permiso = tasks.findPermisoByName(db=db,permiso_name=permiso.nombre)
+    new_permiso1:models.Permiso = tasks.findPermisoByName(db=db,permiso_name=permiso.NOMBRE)
     if new_permiso1:
         return utility.get_json_response('E400', 'El Permiso ya existe')
     else:
