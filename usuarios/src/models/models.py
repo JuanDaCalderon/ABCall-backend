@@ -13,5 +13,13 @@ class Usuarios(database.Base):
     NOMBRES = Column(String)
     APELLIDOS = Column(String)
 
-
+class Cliente(database.Base):
+    __tablename__ = "CLIENTE"
+    ID = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    NOMBRE = Column(String)
+    EMAIL = Column(String, unique=True)
+    TELEFONO = Column(String)
+    DIRECCION = Column(String)
+    
+    
 database.Base.metadata.create_all(bind=database.engine)

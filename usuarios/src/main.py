@@ -55,6 +55,28 @@ def create_users(user: schemas.UserRegister = Body(default=None), db: Session = 
                 "token": token,
             }
 
+@app.post("/usuario/cliente", status_code=status.HTTP_201_CREATED)
+def create_users(client: schemas.ClienteRegister = Body(default=None), db: Session = Depends(database.get_db)):
+    if not client:
+        return utility.get_json_response('E422', 'El body de la petición esta vacio')
+    elif not client.email or not client.nombre or not client.telefono or not client.direccion :
+        return utility.get_json_response('E400', 'email, nombres, telefono y direccion son campos obligatorios')
+    else:
+        email = client.email
+        username = client.nombre
+        client_db = tasks.verify_if_client_already_exist(db=db, email=email, username=username)
+
+        if client_db:
+            return utility.get_json_response('E412', 'Este cliente ya existe con este nombre y/o email')
+        else:
+            cliente = itemgetter('cliente')(tasks.create_client(db=db, client=client))
+            return {
+                "id": cliente.ID,
+                "email": cliente.EMAIL,
+                "nombre": cliente.NOMBRE,
+                "telefono": cliente.TELEFONO,
+                "direccion": cliente.DIRECCION,
+            }
 
 @app.get("/usuario/check-status", status_code=status.HTTP_200_OK)
 def check_status(Authorization: Annotated[Union[str, None], Header()] = None, db: Session = Depends(database.get_db)):
