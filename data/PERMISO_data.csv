@@ -1,0 +1,11 @@
+ID,NOMBRE,ESTADO,ROLE_ID
+1,Crear usuario,True,1
+2,Editar usuario,True,1
+3,Eliminar usuario,False,2
+4,Ver reportes,True,3
+5,Exportar reportes,True,2
+6,Acceder al panel de control,False,3
+7,Modificar configuraciones,True,1
+8,Acceder a estadísticas,True,2
+9,Generar informes,False,3
+10,Ver logs,True,2
