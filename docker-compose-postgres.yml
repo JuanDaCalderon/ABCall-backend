@@ -1,15 +1,15 @@
 version: "3.7"
 
 services:
-  blacklist_db:
-    container_name: blacklist_db
+  postgres:
+    container_name: postgres
     image: postgres
     ports:
       - 5432:5432
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 123456
-      POSTGRES_DB: blacklist_db
+      POSTGRES_PASSWORD: 123456789
+      POSTGRES_DB: postgres
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 2s
