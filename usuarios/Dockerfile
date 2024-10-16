@@ -12,6 +12,6 @@ COPY __init__.py .
 
 COPY main.py .
 
-EXPOSE 8001
+EXPOSE 8003
 
 CMD ["python", "main.py"]

@@ -37,3 +37,22 @@ class UserRegister(BaseModel):
 
     class Config:
         from_attributes = True
+
+class ClienteRegister(BaseModel):
+    nombre: Union[str, None] = None
+    email: Union[str, None] = None
+    telefono: Union[str, None] = None
+    direccion: Union[str, None] = None
+    
+    class Config:
+        from_attributes = True
+
+class ClienteResponse(BaseModel):
+    id: Union[str, None] = None
+    nombre: Union[str, None] = None
+    email: Union[str, None] = None
+    telefono: Union[str, None] = None
+    direccion: Union[str, None] = None
+    
+    class Config:
+        from_attributes = True

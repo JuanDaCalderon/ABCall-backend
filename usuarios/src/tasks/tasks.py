@@ -28,6 +28,10 @@ def verify_if_user_already_exist_recovery(db: Session, username: str, email: str
                                             & (models.Usuarios.EMAIL == email)).first()
     return user if user else False
 
+def verify_if_client_already_exist(db: Session, username: str, email: str):
+    cliente = db.query(models.Cliente).filter((models.Cliente.NOMBRE == username)
+                                            | (models.Cliente.EMAIL == email)).first()
+    return cliente if cliente else False
 
 def get_user_active(db: Session, username: str, email: str):
     user = db.query(models.Usuarios).filter((models.Usuarios.USERNAME == username)
@@ -70,6 +74,12 @@ def create_user(db: Session, user: schemas.UserRegister) -> CreationUser:
         token=access_token,
     )
 
+def create_client(db:Session, client: schemas.ClienteRegister) -> schemas.ClienteResponse :
+    new_client = models.Cliente( NOMBRE = client.nombre, EMAIL=client.email, TELEFONO = client.telefono, DIRECCION=client.direccion)
+    db.add(new_client)
+    db.commit()
+    db.refresh(new_client)
+    return dict(cliente = new_client)
 
 def authenticate_user_by_password(user: models.Usuarios, password: str):
     return utility.verify_password(password, user.PASSWORD) if True else False
