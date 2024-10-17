@@ -1,0 +1,48 @@
+{
+    "executionRoleArn": "arn:aws:iam::682033469251:role/ecsTaskExecutionRole",
+    "containerDefinitions": [
+      {
+        "portMappings": [
+          {
+            "hostPort": 8003,
+            "protocol": "tcp",
+            "containerPort": 8003
+          }
+        ],
+
+        "image": "<IMAGE1_NAME>",
+        "essential": true,
+        "environment": [
+          {
+              "name": "DB_NAME",
+              "value": "postgres"
+          },
+          {
+              "name": "DB_HOST",
+              "value": "database-abcall-1.c74i0uiy6i7h.us-east-1.rds.amazonaws.com"
+          },
+          {
+              "name": "DB_PORT",
+              "value": "5432"
+          },
+          {
+              "name": "DB_USER",
+              "value": "postgres"
+          },
+          {
+              "name": "DB_PASSWORD",
+              "value": "123456789"
+          }
+      ],
+        "name": "Container-app-abcall-usuarios"
+      }
+    ],
+
+    "requiresCompatibilities": [
+      "FARGATE"
+    ],
+    "networkMode": "awsvpc",
+    "cpu": "256",
+    "memory": "512",
+    "family": "task-app-abcall-usuarios"
+  }
