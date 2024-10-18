@@ -1,8 +1,8 @@
 from dotenv import find_dotenv, load_dotenv
-
 from typing import TypedDict
-
+from pydantic import NegativeInt
 from sqlalchemy.orm import Session
+from datetime import datetime
 
 from ..models import models
 from ..schemas import schemas
@@ -23,22 +23,6 @@ def verify_if_user_already_exist(db: Session, username: str, email: str):
     return user if user else False
 
 
-def verify_if_user_already_exist_recovery(db: Session, username: str, email: str):
-    user = db.query(models.Usuarios).filter((models.Usuarios.USERNAME == username)
-                                            & (models.Usuarios.EMAIL == email)).first()
-    return user if user else False
-
-def verify_if_client_already_exist(db: Session, username: str, email: str):
-    cliente = db.query(models.Cliente).filter((models.Cliente.NOMBRE == username)
-                                            | (models.Cliente.EMAIL == email)).first()
-    return cliente if cliente else False
-
-def get_user_active(db: Session, username: str, email: str):
-    user = db.query(models.Usuarios).filter((models.Usuarios.USERNAME == username)
-                                            & (models.Usuarios.EMAIL == email)).first()
-    return user if user else False
-
-
 def verify_if_user_exist_by_email(db: Session, email: str):
     user = db.query(models.Usuarios).filter(models.Usuarios.EMAIL == email).first()
     return user if user else False
@@ -48,24 +32,73 @@ def get_access_token(email: str, username: str):
     return utility.generate_jwt(email, username)
 
 
-def verify_token(token: str):
-    return utility.verify_access_token(token=token)
+def create_roles(db: Session, roles: list[str]):
+    for rol in roles:
+        new_rol = models.Roles(NOMBRE=rol.lower())
+        db.add(new_rol)
+        db.commit()
+        db.refresh(new_rol)
+    roles_stored = get_all_roles(db)
+    return roles_stored
 
 
-def verify_token_has_expired(token: str):
-    return utility.verify_if_token_has_expired(token=token)
+def create_permisos(db: Session, permisos: list[str]):
+    for permiso in permisos:
+        new_permiso = models.Permisos(NOMBRE=permiso.lower())
+        db.add(new_permiso)
+        db.commit()
+        db.refresh(new_permiso)
+    permisos_stored = get_all_permisos(db)
+    return permisos_stored
 
 
-def create_user(db: Session, user: schemas.UserRegister) -> CreationUser:
+def asociar_permisos_roles(db: Session, asociaciones: list[schemas.AsociacionPermisos]):
+    for asociacion in asociaciones:
+        rol = get_rol_by_id(db, asociacion.ROL_ID)
+        permiso = get_permiso_by_id(db, asociacion.PERMISO_ID)
+        rol.PERMISOS.append(permiso)
+        db.commit()
+        db.refresh(rol)
+    roles_stored = get_all_roles(db)
+    return [{"ID": thisRol.ID, "NOMBRE": thisRol.NOMBRE, "PERMISOS": thisRol.PERMISOS} for thisRol in roles_stored]
+
+
+def get_all_roles(db: Session):
+    roles = db.query(models.Roles).all()
+    return roles if roles else False
+
+
+def get_all_permisos(db: Session):
+    permisos = db.query(models.Permisos).all()
+    return permisos if permisos else False
+
+
+def get_rol_by_id(db: Session, id: int) -> models.Roles:
+    rol = db.query(models.Roles).filter(models.Roles.ID == id).first()
+    return rol if rol else False
+
+
+def get_permiso_by_id(db: Session, id: int) -> models.Permisos:
+    permiso = db.query(models.Permisos).filter(models.Permisos.ID == id).first()
+    return permiso if permiso else False
+
+
+def create_user(db: Session, user: schemas.UserRegister, rol: models.Roles) -> CreationUser:
     access_token = get_access_token(email=user.email, username=user.username)
     hashed = utility.get_password_hash(user.password)
+    today = datetime.today()
     new_user = models.Usuarios(
         EMAIL=user.email.lower(),
         USERNAME=user.username.lower(),
+        TELEFONO=user.telefono.lower(),
+        PASSWORD=hashed,
         NOMBRES=user.nombres.lower(),
         APELLIDOS=user.apellidos.lower(),
-        PASSWORD=hashed,
+        DIRECCION=user.direccion.lower() if user.direccion else "",
+        FECHACREACION=today,
+        GESTORTIER=user.gestortier.lower() if user.gestortier else "junior",
     )
+    new_user.ROLEID = rol.ID
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
@@ -74,26 +107,17 @@ def create_user(db: Session, user: schemas.UserRegister) -> CreationUser:
         token=access_token,
     )
 
-def create_client(db:Session, client: schemas.ClienteRegister) -> schemas.ClienteResponse :
-    new_client = models.Cliente( NOMBRE = client.nombre, EMAIL=client.email, TELEFONO = client.telefono, DIRECCION=client.direccion)
-    db.add(new_client)
-    db.commit()
-    db.refresh(new_client)
-    return dict(cliente = new_client)
 
 def authenticate_user_by_password(user: models.Usuarios, password: str):
     return utility.verify_password(password, user.PASSWORD) if True else False
 
 
-def check_user_with_id(db: Session, id: str, user: schemas.TokenObject):
-    this_user = db.query(models.Usuarios).filter((models.Usuarios.ID == id) & (
-        models.Usuarios.EMAIL == user['email']) & (models.Usuarios.USERNAME == user['username'])).first()
-    if this_user:
-        return True
-    else:
-        return False
-
-
-def reset_db(db: Session):
+def reset_db_users(db: Session):
     db.query(models.Usuarios).delete()
+    db.commit()
+
+
+def reset_db_roles_permisos(db: Session):
+    db.query(models.Permisos).delete()
+    db.query(models.Roles).delete()
     db.commit()
