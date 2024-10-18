@@ -2,6 +2,7 @@ from fastapi import FastAPI, status, Depends
 from starlette.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
+from typing import Optional
 from .database import database
 from .models import models
 from .tasks import tasks
@@ -23,8 +24,13 @@ def root():
 
 
 @app.get("/incidentes", status_code=status.HTTP_200_OK)
-def get(db: Session = Depends(database.get_db)):
-    incidentes = tasks.get(db=db)
+def get(cliente: Optional[str] = None, usuario: Optional[str] = None, db: Session = Depends(database.get_db)):
+    if cliente is None and usuario is None:
+        incidentes = tasks.get(db=db)
+    elif cliente != '' :
+        incidentes = tasks.getIncidenteByCliente(db=db , client=cliente)
+    else :
+        incidentes = tasks.getIncidenteByUsuario(db=db , usuario=usuario)
     return incidentes
 
 
