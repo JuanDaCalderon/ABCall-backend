@@ -42,30 +42,6 @@ def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None
     return encoded_jwt
 
 
-def verify_access_token(token: str):
-    try:
-        user = jwt.decode(token, os.environ.get("SECRET_KEY"), algorithms=os.environ.get(
-            "ALGORITHM") if os.environ.get("ALGORITHM") else "HS256")
-        return dict(
-            user=user,
-            is_old_one=True,
-        )
-    except ExpiredSignatureError:
-        user = jwt.decode(token, os.environ.get("SECRET_KEY"), algorithms=os.environ.get("ALGORITHM")
-                          if os.environ.get("ALGORITHM") else "HS256", options={'verify_exp': False})
-        return dict(
-            user=user,
-            is_old_one=False,
-        )
-
-
-def verify_if_token_has_expired(token: str):
-    try:
-        return jwt.decode(token, os.environ.get("SECRET_KEY"), algorithms=os.environ.get("ALGORITHM") if os.environ.get("ALGORITHM") else "HS256")
-    except ExpiredSignatureError:
-        return False
-
-
 def get_json_response(error: str, msg: str) -> JSONResponse:
     class estatusErrorsCode(enum.Enum):
         E400 = status.HTTP_400_BAD_REQUEST
