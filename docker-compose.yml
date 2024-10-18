@@ -76,6 +76,8 @@ services:
       DB_HOST: incidentes_db
       DB_PORT: 5432
       DB_NAME: postgres
+      ACCESS_TOKEN_EXPIRE_MINUTES: 15
+      SECRET_KEY: secret
     depends_on:
       incidentes_db:
         condition: service_healthy

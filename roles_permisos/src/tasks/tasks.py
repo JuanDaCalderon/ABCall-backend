@@ -5,8 +5,8 @@ from ..models import models
 from ..schemas import schemas
 
 
-def createRole(db: Session, role: schemas.role) -> models.Role:
-    role = models.Role(
+def createRole(db: Session, role: schemas.role) -> models.Roles:
+    role = models.Roles(
         NOMBRE=role.NOMBRE.lower(),
     )
     db.add(role)
@@ -14,19 +14,19 @@ def createRole(db: Session, role: schemas.role) -> models.Role:
     db.refresh(role)
     return role
 
-def findRoleByName(db: Session, role_name: schemas.role)->models.Role:
-    role = db.query(models.Role).filter(models.Role.NOMBRE == role_name.lower()).first()
+def findRoleByName(db: Session, role_name: schemas.role)->models.Roles:
+    role = db.query(models.Roles).filter(models.Roles.NOMBRE == role_name.lower()).first()
     return role if role else False
 
-def findRoleById(db: Session, role_id: schemas.role)->models.Role:
-    role = db.query(models.Role).filter(models.Role.ID == role_id).first()
+def findRoleById(db: Session, role_id: schemas.role)->models.Roles:
+    role = db.query(models.Roles).filter(models.Roles.ID == role_id).first()
     return role if role else False
 
 def findAllRoles(db: Session):
-    roles = db.query(models.Role).all()
+    roles = db.query(models.Roles).all()
     return roles if roles else False
-def createPermiso(db: Session, permiso: schemas.permiso) -> models.Permiso:
-    permiso = models.Permiso(
+def createPermiso(db: Session, permiso: schemas.permiso) -> models.Permisos:
+    permiso = models.Permisos(
         NOMBRE=permiso.NOMBRE.lower(),
         ESTADO=permiso.ESTADO
     )
@@ -35,15 +35,15 @@ def createPermiso(db: Session, permiso: schemas.permiso) -> models.Permiso:
     db.refresh(permiso)
     return permiso
 
-def findPermisoByName(db: Session, permiso_name: schemas.role)->models.Role:
-    permiso = db.query(models.Permiso).filter(models.Permiso.NOMBRE == permiso_name.lower()).first()
+def findPermisoByName(db: Session, permiso_name: schemas.role)->models.Roles:
+    permiso = db.query(models.Permisos).filter(models.Permisos.NOMBRE == permiso_name.lower()).first()
     return permiso if permiso else False
 
-def findPermisoById(db: Session, permiso_id:int)->models.Role:
-    permiso = db.query(models.Permiso).filter(models.Permiso.ID == permiso_id).first()
+def findPermisoById(db: Session, permiso_id:int)->models.Roles:
+    permiso = db.query(models.Permisos).filter(models.Permisos.ID == permiso_id).first()
     return permiso if permiso else False
 
-def associatePermisosToRole(db: Session,role: models.Role, permisos: schemas.PermisoUpdate) -> models.Role:
+def associatePermisosToRole(db: Session,role: models.Roles, permisos: schemas.PermisoUpdate) -> models.Roles:
     print(permisos.PERMISOS[0].ID) 
     for permiso_data in permisos.PERMISOS:
         permiso = findPermisoById(db=db,permiso_id=permiso_data.ID)
@@ -55,6 +55,6 @@ def associatePermisosToRole(db: Session,role: models.Role, permisos: schemas.Per
     return dict(role = role)
 
 def reset_db(db: Session):
-    db.query(models.Role).delete()
-    db.query(models.Permiso).delete()
+    db.query(models.Roles).delete()
+    db.query(models.Permisos).delete()
     db.commit()
