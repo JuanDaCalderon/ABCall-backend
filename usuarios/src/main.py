@@ -3,8 +3,6 @@ from fastapi import Body, FastAPI, status, Depends, Header
 from starlette.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 from operator import itemgetter
-from typing_extensions import Annotated
-from typing import Union
 
 from sqlalchemy.orm import Session
 from .schemas import schemas
@@ -31,81 +29,90 @@ def root():
     return RedirectResponse(url="/docs/")
 
 
+@app.get("/roles", status_code=status.HTTP_200_OK)
+def getAllRoles(db: Session = Depends(database.get_db)):
+    roles = tasks.get_all_roles(db=db)
+    if not roles:
+        return utility.get_json_response('E404', 'No hay roles creados')
+    else:
+        return [{"ID": role.ID, "NOMBRE": role.NOMBRE, "PERMISOS": role.PERMISOS} for role in roles]
+
+
+@app.post("/roles/crear", status_code=status.HTTP_201_CREATED)
+def create_roles(roles: list[str] = Body(default=None), db: Session = Depends(database.get_db)):
+    if not roles:
+        return utility.get_json_response('E422', 'El body de la petición esta vacio')
+    else:
+        roles = tasks.create_roles(db, roles)
+        return roles
+
+
+@app.get("/permisos", status_code=status.HTTP_200_OK)
+def getAllPermisos(db: Session = Depends(database.get_db)):
+    permisos = tasks.get_all_permisos(db=db)
+    if not permisos:
+        return utility.get_json_response('E404', 'No hay permisos creados')
+    else:
+        return [{"ID": permiso.ID, "NOMBRE": permiso.NOMBRE, "ROLES": permiso.ROLES} for permiso in permisos]
+
+
+@app.post("/permisos/crear", status_code=status.HTTP_201_CREATED)
+def create_permisos(permisos: list[str] = Body(default=None), db: Session = Depends(database.get_db)):
+    if not permisos:
+        return utility.get_json_response('E422', 'El body de la petición esta vacio')
+    else:
+        permisos = tasks.create_permisos(db, permisos)
+        return permisos
+
+
+@app.post("/permisos/asociar/roles", status_code=status.HTTP_200_OK)
+def asoaciar_permisos_roles(asociaciones: list[schemas.AsociacionPermisos] = Body(default=None), db: Session = Depends(database.get_db)):
+    if not asociaciones:
+        return utility.get_json_response('E422', 'El body de la petición esta vacio')
+    else:
+        roles = tasks.asociar_permisos_roles(db, asociaciones)
+        return roles
+
+
 @app.post("/usuario/register", status_code=status.HTTP_201_CREATED)
 def create_users(user: schemas.UserRegister = Body(default=None), db: Session = Depends(database.get_db)):
+    rol = tasks.get_rol_by_id(db=db, id=user.rol)
     if not user:
         return utility.get_json_response('E422', 'El body de la petición esta vacio')
-    elif not user.email or not user.username or not user.nombres or not user.apellidos or not user.password:
-        return utility.get_json_response('E400', 'email, username, nombres, apellidos y password son campos obligatorios')
+    elif not user.email or not user.username or not user.telefono or not user.password or not user.nombres or not user.apellidos or not user.rol:
+        return utility.get_json_response('E400', 'email, username, telefono, password, nombres, apellidos y el rol son campos obligatorios')
+    elif not rol:
+        return utility.get_json_response('E404', 'el rol con este id no existe')
     else:
         email = user.email
         username = user.username
         user_db = tasks.verify_if_user_already_exist(db=db, email=email, username=username)
-
         if user_db:
             return utility.get_json_response('E412', 'Este usuario ya existe con este username y/o email')
         else:
-            user, token = itemgetter('user', 'token')(tasks.create_user(db=db, user=user))
-            return {
+            user, token = itemgetter('user', 'token')(tasks.create_user(db=db, user=user, rol=rol))
+            isGestor: bool = rol.NOMBRE == 'gestor'
+            rol = tasks.get_rol_by_id(db=db, id=user.ROLEID)
+            thisRol = {
+                "ID":  rol.ID,
+                "NOMBRE": rol.NOMBRE,
+                "permisos": rol.PERMISOS
+            }
+            returnData = {
                 "id": user.ID,
                 "email": user.EMAIL,
                 "username": user.USERNAME,
+                "telefono": user.TELEFONO,
                 "nombres": user.NOMBRES,
                 "apellidos": user.APELLIDOS,
+                "direccion": user.DIRECCION,
+                "fechacreacion": user.FECHACREACION,
                 "token": token,
+                "rol": thisRol,
             }
-
-@app.post("/usuario/cliente", status_code=status.HTTP_201_CREATED)
-def create_users(client: schemas.ClienteRegister = Body(default=None), db: Session = Depends(database.get_db)):
-    if not client:
-        return utility.get_json_response('E422', 'El body de la petición esta vacio')
-    elif not client.email or not client.nombre or not client.telefono or not client.direccion :
-        return utility.get_json_response('E400', 'email, nombres, telefono y direccion son campos obligatorios')
-    else:
-        email = client.email
-        username = client.nombre
-        client_db = tasks.verify_if_client_already_exist(db=db, email=email, username=username)
-
-        if client_db:
-            return utility.get_json_response('E412', 'Este cliente ya existe con este nombre y/o email')
-        else:
-            cliente = itemgetter('cliente')(tasks.create_client(db=db, client=client))
-            return {
-                "id": cliente.ID,
-                "email": cliente.EMAIL,
-                "nombre": cliente.NOMBRE,
-                "telefono": cliente.TELEFONO,
-                "direccion": cliente.DIRECCION,
-            }
-
-@app.get("/usuario/check-status", status_code=status.HTTP_200_OK)
-def check_status(Authorization: Annotated[Union[str, None], Header()] = None, db: Session = Depends(database.get_db)):
-    if not Authorization:
-        return utility.get_json_response('E403', 'El token no fue suministrado en el header')
-    else:
-        given_token = Authorization.replace("Bearer", "").strip()
-        user, is_old_one = itemgetter('user', 'is_old_one')(tasks.verify_token(token=given_token))
-        if not is_old_one:
-            user_db = tasks.get_user_active(db=db, email=user["email"], username=user["username"])
-            new_token = tasks.get_access_token(email=user["email"], username=user["username"])
-            return {
-                "id": user_db.ID,
-                "email": user_db.EMAIL,
-                "username": user_db.USERNAME,
-                "nombres": user_db.NOMBRES,
-                "apellidos": user_db.APELLIDOS,
-                "token": new_token,
-            }
-        else:
-            user_db = tasks.get_user_active(db=db, email=user["email"], username=user["username"])
-            return {
-                "id": user_db.ID,
-                "email": user_db.EMAIL,
-                "username": user_db.USERNAME,
-                "nombres": user_db.NOMBRES,
-                "apellidos": user_db.APELLIDOS,
-                "token": given_token,
-            }
+            if isGestor:
+                returnData['gestortier'] = user.GESTORTIER
+            return returnData
 
 
 @app.post("/usuario/login", status_code=status.HTTP_200_OK)
@@ -126,22 +133,42 @@ def login_users(user: schemas.UserLogin = Body(default=None), db: Session = Depe
                 return utility.get_json_response('E401', 'Contraseña incorrecta')
             else:
                 token = tasks.get_access_token(email=user.EMAIL, username=user.USERNAME)
-                return {
+                isGestor: bool = user.ROLEID == 3
+                rol = tasks.get_rol_by_id(db=db, id=user.ROLEID)
+                thisRol = {
+                    "ID":  rol.ID,
+                    "NOMBRE": rol.NOMBRE,
+                    "permisos": rol.PERMISOS
+                }
+                returnData = {
                     "id": user.ID,
                     "email": user.EMAIL,
                     "username": user.USERNAME,
+                    "telefono": user.TELEFONO,
                     "nombres": user.NOMBRES,
                     "apellidos": user.APELLIDOS,
+                    "direccion": user.DIRECCION,
+                    "fechacreacion": user.FECHACREACION,
                     "token": token,
+                    "rol": thisRol
                 }
+                if isGestor:
+                    returnData['gestortier'] = user.GESTORTIER
+                return returnData
 
 
 @app.get("/usuario/ping", status_code=status.HTTP_200_OK)
 def verify_health():
-    return "pong"
+    return {"msg": "pong"}
 
 
 @app.post("/usuario/reset", status_code=status.HTTP_200_OK)
 def reset(db: Session = Depends(database.get_db)):
-    tasks.reset_db(db=db)
+    tasks.reset_db_users(db=db)
     return {"msg": "Todos los usuarios fueron eliminados"}
+
+
+@app.post("/rolesypermisos/reset", status_code=status.HTTP_200_OK)
+def reset(db: Session = Depends(database.get_db)):
+    tasks.reset_db_roles_permisos(db=db)
+    return {"msg": "Todos los roles y permisos fueron eliminados"}
