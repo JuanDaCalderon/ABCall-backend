@@ -40,7 +40,7 @@ def verify_health():
 
 @app.get("/role/{role_id}", status_code=status.HTTP_200_OK)
 def getRole(role_id:int, db: Session = Depends(database.get_db)):
-    new_role:models.Role = tasks.findRoleById(db=db,role_id=role_id)
+    new_role:models.Roles = tasks.findRoleById(db=db,role_id=role_id)
     if not new_role:
         return utility.get_json_response('E404', 'El role no existe') 
     else:
@@ -57,11 +57,11 @@ def create(role: schemas.role = Body(default=None), db: Session = Depends(databa
     elif not role.NOMBRE:
         return utility.get_json_response('E400', 'El nombre es obligatorio')
     
-    new_role1:models.Role = tasks.findRoleByName(db=db,role_name=role.NOMBRE)
+    new_role1:models.Roles = tasks.findRoleByName(db=db,role_name=role.NOMBRE)
     if new_role1:
         return utility.get_json_response('E400', 'El Role ya existe')
     else:
-        new_role: models.Role = tasks.createRole(db=db, role=role)
+        new_role: models.Roles = tasks.createRole(db=db, role=role)
         return {
             "ID": new_role.ID,
             "NOMBRE": new_role.NOMBRE
@@ -74,20 +74,19 @@ def create(permiso: schemas.permiso = Body(default=None), db: Session = Depends(
     elif not permiso.NOMBRE or not permiso.ESTADO:
         return utility.get_json_response('E400', 'El nombre y el estado es obligatorio')
     
-    new_permiso1:models.Permiso = tasks.findPermisoByName(db=db,permiso_name=permiso.NOMBRE)
+    new_permiso1:models.Permisos = tasks.findPermisoByName(db=db,permiso_name=permiso.NOMBRE)
     if new_permiso1:
         return utility.get_json_response('E400', 'El Permiso ya existe')
     else:
-        new_permiso: models.Permiso = tasks.createPermiso(db=db, permiso=permiso)
+        new_permiso: models.Permisos = tasks.createPermiso(db=db, permiso=permiso)
         return {
             "ID": new_permiso.ID,
-            "NOMBRE": new_permiso.NOMBRE,
-            "ESTADO": new_permiso.ESTADO
+            "NOMBRE": new_permiso.NOMBRE
         }
 
 @app.post("/role/{role_id}/permiso" , status_code=status.HTTP_201_CREATED)
 def associate_permiso_to_role(role_id:int, permisos: schemas.PermisoUpdate = Body(default=None) , db: Session = Depends(database.get_db)):
-    role:models.Role = tasks.findRoleById(db=db,role_id=role_id)
+    role:models.Roles = tasks.findRoleById(db=db,role_id=role_id)
     if not role:
         return utility.get_json_response('E404', 'El rol no existe')
     elif not permisos:

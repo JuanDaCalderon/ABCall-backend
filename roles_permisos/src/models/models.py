@@ -1,26 +1,51 @@
-from sqlalchemy import BigInteger, Column, String, Boolean, ForeignKey, Table
-from sqlalchemy.orm import relationship
+import enum
+import uuid
+from sqlalchemy import BigInteger, Column, String, Boolean, ForeignKey, Table, DateTime, Enum
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship, mapped_column
 from ..database import database
 
+class GestorTiers(enum.Enum):
+    junior = 'junior'
+    mid = 'mid'
+    senior = 'senior'
+    lead = 'lead'
+    manager = 'manager'
 
-role_permiso = Table(
-    'ROLE_PERMISO', database.Base.metadata,
-    Column('ROLE_ID', BigInteger, ForeignKey('ROLE.ID'), primary_key=True),
-    Column('PERMISO_ID', BigInteger, ForeignKey('PERMISO.ID'), primary_key=True)
+
+class Usuarios(database.Base):
+    __tablename__ = "USUARIOS"
+    ID = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    EMAIL = Column(String, unique=True)
+    USERNAME = Column(String, unique=True)
+    TELEFONO = Column(String, unique=True)
+    PASSWORD = Column(String)
+    NOMBRES = Column(String)
+    APELLIDOS = Column(String)
+    DIRECCION = Column(String)
+    FECHACREACION = Column(DateTime)
+    GESTORTIER = Column(Enum(GestorTiers))
+    ROLEID = mapped_column(ForeignKey("ROLES.ID", ondelete="CASCADE"))
+    ROLES = relationship("Roles", back_populates="USUARIO")
+
+roles_permisos = Table(
+    'ROLES_PERMISOS', database.Base.metadata,
+    Column('ROL_ID', BigInteger, ForeignKey('ROLES.ID', ondelete="CASCADE"), primary_key=True),
+    Column('PERMISO_ID', BigInteger, ForeignKey('PERMISOS.ID', ondelete="CASCADE"), primary_key=True)
 )
 
-class Permiso(database.Base):
-    __tablename__ = "PERMISO"
+class Permisos(database.Base):
+    __tablename__ = "PERMISOS"
     ID = Column(BigInteger, primary_key=True, autoincrement=True)
     NOMBRE = Column(String)
-    ESTADO = Column(Boolean)
-    ROLES = relationship("Role", secondary=role_permiso, back_populates="PERMISOS")
+    ROLES = relationship("Roles", secondary=roles_permisos, back_populates="PERMISOS")
 
-class Role(database.Base):
-    __tablename__ = "ROLE"
+class Roles(database.Base):
+    __tablename__ = "ROLES"
     ID = Column(BigInteger, primary_key=True, autoincrement=True)
-    NOMBRE = Column(String)
-    PERMISOS = relationship("Permiso", secondary=role_permiso, back_populates="ROLES")
-    
+    NOMBRE = Column(String, unique=True)
+    USUARIO = relationship("Usuarios", back_populates="ROLES")
+    PERMISOS = relationship("Permisos", secondary=roles_permisos, back_populates="ROLES")
+
     
 database.Base.metadata.create_all(bind=database.engine)
