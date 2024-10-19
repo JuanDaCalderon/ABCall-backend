@@ -27,11 +27,11 @@ def root():
 
 @app.get("/roles", status_code=status.HTTP_200_OK)
 def getAllRoles(db: Session = Depends(database.get_db)):
-    roles:List[models.Role] = tasks.findAllRoles(db=db)
+    roles:List[models.Roles] = tasks.findAllRoles(db=db)
     if not roles:
         return utility.get_json_response('E404', 'No hay roles creados') 
     else:
-        return [{"ID":new_role.ID,"NOMBRE":new_role.NOMBRE,"PERMISOS":new_role.PERMISOS} for new_role in roles]
+        return [{"id":new_role.id,"nombre":new_role.nombre,"permisos":new_role.permisos} for new_role in roles]
 
 @app.get("/role/ping", status_code=status.HTTP_200_OK)
 def verify_health():
@@ -45,43 +45,43 @@ def getRole(role_id:int, db: Session = Depends(database.get_db)):
         return utility.get_json_response('E404', 'El role no existe') 
     else:
         return {
-            "ID":new_role.ID,
-            "NOMBRE":new_role.NOMBRE,
-            "PERMISOS":new_role.PERMISOS
+            "id":new_role.id,
+            "nombre":new_role.nombre,
+            "permisos":new_role.permisos
         }
 
 @app.post("/role", status_code=status.HTTP_201_CREATED)
 def create(role: schemas.role = Body(default=None), db: Session = Depends(database.get_db)):
     if not role:
         return utility.get_json_response('E422', 'El body de la petición esta vacio')
-    elif not role.NOMBRE:
+    elif not role.nombre:
         return utility.get_json_response('E400', 'El nombre es obligatorio')
     
-    new_role1:models.Roles = tasks.findRoleByName(db=db,role_name=role.NOMBRE)
+    new_role1:models.Roles = tasks.findRoleByName(db=db,role_name=role.nombre)
     if new_role1:
         return utility.get_json_response('E400', 'El Role ya existe')
     else:
         new_role: models.Roles = tasks.createRole(db=db, role=role)
         return {
-            "ID": new_role.ID,
-            "NOMBRE": new_role.NOMBRE
+            "id": new_role.id,
+            "nombre": new_role.nombre
         }
 
 @app.post("/permiso", status_code=status.HTTP_201_CREATED)
 def create(permiso: schemas.permiso = Body(default=None), db: Session = Depends(database.get_db)):
     if not permiso:
         return utility.get_json_response('E422', 'El body de la petición esta vacio')
-    elif not permiso.NOMBRE or not permiso.ESTADO:
+    elif not permiso.nombre:
         return utility.get_json_response('E400', 'El nombre y el estado es obligatorio')
     
-    new_permiso1:models.Permisos = tasks.findPermisoByName(db=db,permiso_name=permiso.NOMBRE)
+    new_permiso1:models.Permisos = tasks.findPermisoByName(db=db,permiso_name=permiso.nombre)
     if new_permiso1:
         return utility.get_json_response('E400', 'El Permiso ya existe')
     else:
         new_permiso: models.Permisos = tasks.createPermiso(db=db, permiso=permiso)
         return {
-            "ID": new_permiso.ID,
-            "NOMBRE": new_permiso.NOMBRE
+            "id": new_permiso.id,
+            "nombre": new_permiso.nombre
         }
 
 @app.post("/role/{role_id}/permiso" , status_code=status.HTTP_201_CREATED)
@@ -94,9 +94,9 @@ def associate_permiso_to_role(role_id:int, permisos: schemas.PermisoUpdate = Bod
     else:
         new_role_permisos = itemgetter('role') (tasks.associatePermisosToRole(db=db, role=role, permisos=permisos))
         return {
-            "ID": new_role_permisos.ID,
-            "NOMBRE":new_role_permisos.NOMBRE,
-            "PERMISOS":new_role_permisos.PERMISOS
+            "id": new_role_permisos.id,
+            "nombre":new_role_permisos.nombre,
+            "permisos":new_role_permisos.permisos
             }
 
 
