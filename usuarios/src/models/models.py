@@ -47,7 +47,7 @@ class Roles(database.Base):
 class Permisos(database.Base):
     __tablename__ = "PERMISOS"
     ID = Column(BigInteger, primary_key=True, autoincrement=True)
-    NOMBRE = Column(String)
+    NOMBRE = Column(String, unique=True)
     ROLES = relationship("Roles", secondary=roles_permisos, back_populates="PERMISOS")
 
 
