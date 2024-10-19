@@ -5,6 +5,13 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship, mapped_column
 from ..database import database
 
+roles_permisos = Table(
+    'ROLES_PERMISOS', database.Base.metadata,
+    Column('rol_id', BigInteger, ForeignKey('ROLES.id', ondelete="CASCADE"), primary_key=True),
+    Column('permiso_id', BigInteger, ForeignKey('PERMISOS.id', ondelete="CASCADE"), primary_key=True)
+)
+
+
 class GestorTiers(enum.Enum):
     junior = 'junior'
     mid = 'mid'
@@ -15,37 +22,33 @@ class GestorTiers(enum.Enum):
 
 class Usuarios(database.Base):
     __tablename__ = "USUARIOS"
-    ID = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    EMAIL = Column(String, unique=True)
-    USERNAME = Column(String, unique=True)
-    TELEFONO = Column(String, unique=True)
-    PASSWORD = Column(String)
-    NOMBRES = Column(String)
-    APELLIDOS = Column(String)
-    DIRECCION = Column(String)
-    FECHACREACION = Column(DateTime)
-    GESTORTIER = Column(Enum(GestorTiers))
-    ROLEID = mapped_column(ForeignKey("ROLES.ID", ondelete="CASCADE"))
-    ROLES = relationship("Roles", back_populates="USUARIO")
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    email = Column(String, unique=True)
+    username = Column(String, unique=True)
+    telefono = Column(String, unique=True)
+    password = Column(String)
+    nombres = Column(String)
+    apellidos = Column(String)
+    direccion = Column(String)
+    fechacreacion = Column(DateTime)
+    gestortier = Column(Enum(GestorTiers))
+    roleid = mapped_column(ForeignKey("ROLES.id", ondelete="CASCADE"))
+    roles = relationship("Roles", back_populates="usuario")
 
-roles_permisos = Table(
-    'ROLES_PERMISOS', database.Base.metadata,
-    Column('ROL_ID', BigInteger, ForeignKey('ROLES.ID', ondelete="CASCADE"), primary_key=True),
-    Column('PERMISO_ID', BigInteger, ForeignKey('PERMISOS.ID', ondelete="CASCADE"), primary_key=True)
-)
-
-class Permisos(database.Base):
-    __tablename__ = "PERMISOS"
-    ID = Column(BigInteger, primary_key=True, autoincrement=True)
-    NOMBRE = Column(String)
-    ROLES = relationship("Roles", secondary=roles_permisos, back_populates="PERMISOS")
 
 class Roles(database.Base):
     __tablename__ = "ROLES"
-    ID = Column(BigInteger, primary_key=True, autoincrement=True)
-    NOMBRE = Column(String, unique=True)
-    USUARIO = relationship("Usuarios", back_populates="ROLES")
-    PERMISOS = relationship("Permisos", secondary=roles_permisos, back_populates="ROLES")
+    id = Column(BigInteger, primary_key=True, autoincrement=True)
+    nombre = Column(String, unique=True)
+    usuario = relationship("Usuarios", back_populates="roles")
+    permisos = relationship("Permisos", secondary=roles_permisos, back_populates="roles")
+
+
+class Permisos(database.Base):
+    __tablename__ = "PERMISOS"
+    id = Column(BigInteger, primary_key=True, autoincrement=True)
+    nombre = Column(String, unique=True)
+    roles = relationship("Roles", secondary=roles_permisos, back_populates="permisos")
 
     
 database.Base.metadata.create_all(bind=database.engine)

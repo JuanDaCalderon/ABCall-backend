@@ -7,7 +7,7 @@ from ..schemas import schemas
 
 def createRole(db: Session, role: schemas.role) -> models.Roles:
     role = models.Roles(
-        NOMBRE=role.NOMBRE.lower(),
+        nombre=role.nombre.lower(),
     )
     db.add(role)
     db.commit()
@@ -15,11 +15,11 @@ def createRole(db: Session, role: schemas.role) -> models.Roles:
     return role
 
 def findRoleByName(db: Session, role_name: schemas.role)->models.Roles:
-    role = db.query(models.Roles).filter(models.Roles.NOMBRE == role_name.lower()).first()
+    role = db.query(models.Roles).filter(models.Roles.nombre == role_name.lower()).first()
     return role if role else False
 
 def findRoleById(db: Session, role_id: schemas.role)->models.Roles:
-    role = db.query(models.Roles).filter(models.Roles.ID == role_id).first()
+    role = db.query(models.Roles).filter(models.Roles.id == role_id).first()
     return role if role else False
 
 def findAllRoles(db: Session):
@@ -27,8 +27,7 @@ def findAllRoles(db: Session):
     return roles if roles else False
 def createPermiso(db: Session, permiso: schemas.permiso) -> models.Permisos:
     permiso = models.Permisos(
-        NOMBRE=permiso.NOMBRE.lower(),
-        ESTADO=permiso.ESTADO
+        nombre=permiso.nombre.lower(),
     )
     db.add(permiso)
     db.commit()
@@ -36,19 +35,18 @@ def createPermiso(db: Session, permiso: schemas.permiso) -> models.Permisos:
     return permiso
 
 def findPermisoByName(db: Session, permiso_name: schemas.role)->models.Roles:
-    permiso = db.query(models.Permisos).filter(models.Permisos.NOMBRE == permiso_name.lower()).first()
+    permiso = db.query(models.Permisos).filter(models.Permisos.nombre == permiso_name.lower()).first()
     return permiso if permiso else False
 
 def findPermisoById(db: Session, permiso_id:int)->models.Roles:
-    permiso = db.query(models.Permisos).filter(models.Permisos.ID == permiso_id).first()
+    permiso = db.query(models.Permisos).filter(models.Permisos.id == permiso_id).first()
     return permiso if permiso else False
 
 def associatePermisosToRole(db: Session,role: models.Roles, permisos: schemas.PermisoUpdate) -> models.Roles:
-    print(permisos.PERMISOS[0].ID) 
-    for permiso_data in permisos.PERMISOS:
-        permiso = findPermisoById(db=db,permiso_id=permiso_data.ID)
-        if permiso not in role.PERMISOS:
-            role.PERMISOS.append(permiso) 
+    for permiso_data in permisos.permisos:
+        permiso = findPermisoById(db=db,permiso_id=permiso_data.id)
+        if permiso not in role.permisos:
+            role.permisos.append(permiso) 
         
     db.commit()
     db.refresh(role)
