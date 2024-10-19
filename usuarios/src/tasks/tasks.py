@@ -34,20 +34,24 @@ def get_access_token(email: str, username: str):
 
 def create_roles(db: Session, roles: list[str]):
     for rol in roles:
-        new_rol = models.Roles(NOMBRE=rol.lower())
-        db.add(new_rol)
-        db.commit()
-        db.refresh(new_rol)
+        isRolCreated = get_rol_by_nombre(db, rol.lower())
+        if not isRolCreated:
+            new_rol = models.Roles(NOMBRE=rol.lower())
+            db.add(new_rol)
+            db.commit()
+            db.refresh(new_rol)
     roles_stored = get_all_roles(db)
     return roles_stored
 
 
 def create_permisos(db: Session, permisos: list[str]):
     for permiso in permisos:
-        new_permiso = models.Permisos(NOMBRE=permiso.lower())
-        db.add(new_permiso)
-        db.commit()
-        db.refresh(new_permiso)
+        isPermisoCreated = get_permiso_by_nombre(db, permiso.lower())
+        if not isPermisoCreated:
+            new_permiso = models.Permisos(NOMBRE=permiso.lower())
+            db.add(new_permiso)
+            db.commit()
+            db.refresh(new_permiso)
     permisos_stored = get_all_permisos(db)
     return permisos_stored
 
@@ -56,9 +60,10 @@ def asociar_permisos_roles(db: Session, asociaciones: list[schemas.AsociacionPer
     for asociacion in asociaciones:
         rol = get_rol_by_id(db, asociacion.ROL_ID)
         permiso = get_permiso_by_id(db, asociacion.PERMISO_ID)
-        rol.PERMISOS.append(permiso)
-        db.commit()
-        db.refresh(rol)
+        if permiso not in rol.PERMISOS:
+            rol.PERMISOS.append(permiso)
+            db.commit()
+            db.refresh(rol)
     roles_stored = get_all_roles(db)
     return [{"ID": thisRol.ID, "NOMBRE": thisRol.NOMBRE, "PERMISOS": thisRol.PERMISOS} for thisRol in roles_stored]
 
@@ -78,8 +83,18 @@ def get_rol_by_id(db: Session, id: int) -> models.Roles:
     return rol if rol else False
 
 
+def get_rol_by_nombre(db: Session, nombre: str):
+    rol = db.query(models.Roles).filter(models.Roles.NOMBRE == nombre).first()
+    return rol if rol else False
+
+
 def get_permiso_by_id(db: Session, id: int) -> models.Permisos:
     permiso = db.query(models.Permisos).filter(models.Permisos.ID == id).first()
+    return permiso if permiso else False
+
+
+def get_permiso_by_nombre(db: Session, nombre: str):
+    permiso = db.query(models.Permisos).filter(models.Permisos.NOMBRE == nombre).first()
     return permiso if permiso else False
 
 
