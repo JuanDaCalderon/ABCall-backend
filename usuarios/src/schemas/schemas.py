@@ -3,8 +3,8 @@ from pydantic import BaseModel
 
 
 class AsociacionPermisos(BaseModel):
-    ROL_ID: Union[int, None] = None
-    PERMISO_ID: Union[int, None] = None
+    rol_id: Union[int, None] = None
+    permiso_id: Union[int, None] = None
 
     class Config:
         from_attributes = True

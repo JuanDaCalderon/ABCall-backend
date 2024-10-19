@@ -35,7 +35,7 @@ def getAllRoles(db: Session = Depends(database.get_db)):
     if not roles:
         return utility.get_json_response('E404', 'No hay roles creados')
     else:
-        return [{"ID": role.ID, "NOMBRE": role.NOMBRE, "PERMISOS": role.PERMISOS} for role in roles]
+        return [{"id": role.id, "nombre": role.nombre, "permisos": role.permisos} for role in roles]
 
 
 @app.post("/roles/crear", status_code=status.HTTP_201_CREATED)
@@ -53,7 +53,7 @@ def getAllPermisos(db: Session = Depends(database.get_db)):
     if not permisos:
         return utility.get_json_response('E404', 'No hay permisos creados')
     else:
-        return [{"ID": permiso.ID, "NOMBRE": permiso.NOMBRE, "ROLES": permiso.ROLES} for permiso in permisos]
+        return [{"id": permiso.id, "nombre": permiso.nombre, "roles": permiso.roles} for permiso in permisos]
 
 
 @app.post("/permisos/crear", status_code=status.HTTP_201_CREATED)
@@ -91,27 +91,27 @@ def create_users(user: schemas.UserRegister = Body(default=None), db: Session = 
             return utility.get_json_response('E412', 'Este usuario ya existe con este username y/o email')
         else:
             user, token = itemgetter('user', 'token')(tasks.create_user(db=db, user=user, rol=rol))
-            isGestor: bool = rol.NOMBRE == 'gestor'
-            rol = tasks.get_rol_by_id(db=db, id=user.ROLEID)
+            isGestor: bool = rol.nombre == 'gestor'
+            rol = tasks.get_rol_by_id(db=db, id=user.roleid)
             thisRol = {
-                "ID":  rol.ID,
-                "NOMBRE": rol.NOMBRE,
-                "permisos": rol.PERMISOS
+                "id":  rol.id,
+                "nombre": rol.nombre,
+                "permisos": rol.permisos
             }
             returnData = {
-                "id": user.ID,
-                "email": user.EMAIL,
-                "username": user.USERNAME,
-                "telefono": user.TELEFONO,
-                "nombres": user.NOMBRES,
-                "apellidos": user.APELLIDOS,
-                "direccion": user.DIRECCION,
-                "fechacreacion": user.FECHACREACION,
+                "id": user.id,
+                "email": user.email,
+                "username": user.username,
+                "telefono": user.telefono,
+                "nombres": user.nombres,
+                "apellidos": user.apellidos,
+                "direccion": user.direccion,
+                "fechacreacion": user.fechacreacion,
                 "token": token,
                 "rol": thisRol,
             }
             if isGestor:
-                returnData['gestortier'] = user.GESTORTIER
+                returnData['gestortier'] = user.gestortier
             return returnData
 
 
@@ -132,28 +132,28 @@ def login_users(user: schemas.UserLogin = Body(default=None), db: Session = Depe
             if not is_authenticate:
                 return utility.get_json_response('E401', 'Contraseña incorrecta')
             else:
-                token = tasks.get_access_token(email=user.EMAIL, username=user.USERNAME)
-                isGestor: bool = user.ROLEID == 3
-                rol = tasks.get_rol_by_id(db=db, id=user.ROLEID)
+                token = tasks.get_access_token(email=user.email, username=user.username)
+                isGestor: bool = user.roleid == 3
+                rol = tasks.get_rol_by_id(db=db, id=user.roleid)
                 thisRol = {
-                    "ID":  rol.ID,
-                    "NOMBRE": rol.NOMBRE,
-                    "permisos": rol.PERMISOS
+                    "id":  rol.id,
+                    "nombre": rol.nombre,
+                    "permisos": rol.permisos
                 }
                 returnData = {
-                    "id": user.ID,
-                    "email": user.EMAIL,
-                    "username": user.USERNAME,
-                    "telefono": user.TELEFONO,
-                    "nombres": user.NOMBRES,
-                    "apellidos": user.APELLIDOS,
-                    "direccion": user.DIRECCION,
-                    "fechacreacion": user.FECHACREACION,
+                    "id": user.id,
+                    "email": user.email,
+                    "username": user.username,
+                    "telefono": user.telefono,
+                    "nombres": user.nombres,
+                    "apellidos": user.apellidos,
+                    "direccion": user.direccion,
+                    "fechacreacion": user.fechacreacion,
                     "token": token,
                     "rol": thisRol
                 }
                 if isGestor:
-                    returnData['gestortier'] = user.GESTORTIER
+                    returnData['gestortier'] = user.gestortier
                 return returnData
 
 
