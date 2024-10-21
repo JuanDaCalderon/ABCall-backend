@@ -1,0 +1,9 @@
+version: 1
+Resources:
+  - TargetService:
+      Type: AWS::ECS::Service
+      Properties:
+        TaskDefinition: "<TASK_DEFINITION>" # Puedes usar el ARN o el nombre de la definición de tarea
+        LoadBalancerInfo:
+          ContainerName: "Container-app-abcall-crear"
+          ContainerPort: 8000

@@ -50,6 +50,7 @@ Thumbs.db
 
 # Env
 .env*
+env*
 .venv
 __pycache__
 # Elastic Beanstalk Files
