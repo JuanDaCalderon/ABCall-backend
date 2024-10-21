@@ -32,6 +32,14 @@
           {
               "name": "DB_PASSWORD",
               "value": "123456789"
+          },
+          {
+            "name": "ACCESS_TOKEN_EXPIRE_MINUTES",
+            "value":"30"
+          },
+          {
+            "name": "SECRET_KEY",
+            "value": "secret"
           }
       ],
         "name": "Container-app-abcall-usuarios"
