@@ -72,6 +72,23 @@ def getAllUsuarios(db: Session = Depends(database.get_db)):
                 "fechacreacion": user.fechacreacion,
             } for user in usuarios]
 
+@app.get("/usuarios/{role_id}", status_code=status.HTTP_200_OK)
+def getAllUsuarios(role_id:int, db: Session = Depends(database.get_db)):
+    usuarios = tasks.get_all_users_by_rol(db=db, role_id=role_id)
+    if not usuarios:
+        return utility.get_json_response('E404', 'No hay usuarios creados')
+    else:
+        return [{
+                "id": user.id,
+                "email": user.email,
+                "username": user.username,
+                "telefono": user.telefono,
+                "nombres": user.nombres,
+                "apellidos": user.apellidos,
+                "direccion": user.direccion,
+                "fechacreacion": user.fechacreacion,
+            } for user in usuarios]
+
 
 @app.post("/permisos/crear", status_code=status.HTTP_201_CREATED)
 def create_permisos(permisos: list[str] = Body(default=None), db: Session = Depends(database.get_db)):
