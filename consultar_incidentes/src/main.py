@@ -27,7 +27,7 @@ def root():
 def get(cliente: Optional[str] = None, usuario: Optional[str] = None, db: Session = Depends(database.get_db)):
     if cliente is None and usuario is None:
         incidentes = tasks.get(db=db)
-    elif cliente != '' :
+    elif cliente is not None :
         incidentes = tasks.getIncidenteByCliente(db=db , client=cliente)
     else :
         incidentes = tasks.getIncidenteByUsuario(db=db , usuario=usuario)

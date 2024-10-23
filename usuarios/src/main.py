@@ -55,6 +55,23 @@ def getAllPermisos(db: Session = Depends(database.get_db)):
     else:
         return [{"id": permiso.id, "nombre": permiso.nombre, "roles": permiso.roles} for permiso in permisos]
 
+@app.get("/usuarios", status_code=status.HTTP_200_OK)
+def getAllUsuarios(db: Session = Depends(database.get_db)):
+    usuarios = tasks.get_all_users(db=db)
+    if not usuarios:
+        return utility.get_json_response('E404', 'No hay usuarios creados')
+    else:
+        return [{
+                "id": user.id,
+                "email": user.email,
+                "username": user.username,
+                "telefono": user.telefono,
+                "nombres": user.nombres,
+                "apellidos": user.apellidos,
+                "direccion": user.direccion,
+                "fechacreacion": user.fechacreacion,
+            } for user in usuarios]
+
 
 @app.post("/permisos/crear", status_code=status.HTTP_201_CREATED)
 def create_permisos(permisos: list[str] = Body(default=None), db: Session = Depends(database.get_db)):
