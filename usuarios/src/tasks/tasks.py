@@ -77,6 +77,13 @@ def get_all_permisos(db: Session):
     permisos = db.query(models.Permisos).all()
     return permisos if permisos else False
 
+def get_all_users(db: Session):
+    usuarios = db.query(models.Usuarios).all()
+    return usuarios if usuarios else False
+
+def get_all_users_by_rol(db: Session, role_id:int):
+    usuarios = db.query(models.Usuarios).filter(models.Usuarios.roleid == role_id).all()
+    return usuarios if usuarios else False
 
 def get_rol_by_id(db: Session, id: int) -> models.Roles:
     rol = db.query(models.Roles).filter(models.Roles.id == id).first()
