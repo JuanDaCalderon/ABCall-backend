@@ -8,11 +8,11 @@ def get(db: Session) -> List[models.Incidentes]:
     return incidentes
 
 def getIncidenteByCliente(db: Session, client:str):
-    incidentes: List[models.Incidentes] = db.query(models.Incidentes).filter(models.Incidentes.CLIENTE == client).all()
+    incidentes: List[models.Incidentes] = db.query(models.Incidentes).filter(models.Incidentes.cliente == client).all()
     return incidentes 
 
 def getIncidenteByUsuario(db: Session, usuario:str):
-    incidentes: List[models.Incidentes] = db.query(models.Incidentes).filter(models.Incidentes.USUARIO == usuario).all()
+    incidentes: List[models.Incidentes] = db.query(models.Incidentes).filter(models.Incidentes.usuario == usuario).all()
     return incidentes 
 def reset_db(db: Session):
     db.query(models.Incidentes).delete()
