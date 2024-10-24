@@ -6,7 +6,7 @@ from typing import Optional
 from .database import database
 from .models import models
 from .tasks import tasks
-
+from .utility import utility
 app = FastAPI()
 
 app.add_middleware(
@@ -33,7 +33,12 @@ def get(cliente: Optional[str] = None, usuario: Optional[str] = None, db: Sessio
         incidentes = tasks.getIncidenteByUsuario(db=db , usuario=usuario)
     return incidentes
 
-# get incidencia 
+@app.get("/incidente/{id}", status_code=status.HTTP_200_OK)
+def get(id:int, db: Session = Depends(database.get_db)):
+    incidente = tasks.getById(db=db, id=id)
+    if not incidente:
+        return utility.get_json_response('E404', 'La incidencia no existe') 
+    return incidente
 
 @app.get("/incidentes/ping", status_code=status.HTTP_200_OK)
 def verify_health():
