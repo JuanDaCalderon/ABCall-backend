@@ -33,6 +33,7 @@ def get(cliente: Optional[str] = None, usuario: Optional[str] = None, db: Sessio
         incidentes = tasks.getIncidenteByUsuario(db=db , usuario=usuario)
     return incidentes
 
+# get incidencia 
 
 @app.get("/incidentes/ping", status_code=status.HTTP_200_OK)
 def verify_health():
