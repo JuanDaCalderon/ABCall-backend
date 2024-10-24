@@ -7,6 +7,10 @@ def get(db: Session) -> List[models.Incidentes]:
     incidentes: List[models.Incidentes] = db.query(models.Incidentes).all()
     return incidentes
 
+def getById(db: Session , id:int) -> List[models.Incidentes]:
+    incidente: models.Incidentes = db.query(models.Incidentes).filter(models.Incidentes.id == id).first()
+    return incidente
+
 def getIncidenteByCliente(db: Session, client:str):
     incidentes: List[models.Incidentes] = db.query(models.Incidentes).filter(models.Incidentes.cliente == client).all()
     return incidentes 
