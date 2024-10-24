@@ -1,7 +1,7 @@
 from typing import List
 from sqlalchemy.orm import Session
 from ..models import models
-
+from ..schemas import schemas
 
 def get(db: Session) -> List[models.Incidentes]:
     incidentes: List[models.Incidentes] = db.query(models.Incidentes).all()

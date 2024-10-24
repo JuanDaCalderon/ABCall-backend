@@ -9,9 +9,9 @@ from ..database import database
 class Incidentes(database.Base):
     __tablename__ = "INCIDENTES"
     id = Column(BigInteger, primary_key=True, autoincrement=True)
-    cliente = mapped_column(ForeignKey("USUARIOS.id", ondelete="CASCADE"))
+    cliente = Column(UUID(as_uuid=True), ForeignKey("USUARIOS.id", ondelete="CASCADE"))
     fechacreacion = Column(DateTime)
-    usuario = mapped_column(ForeignKey("USUARIOS.id", ondelete="CASCADE"))
+    usuario = Column(UUID(as_uuid=True), ForeignKey("USUARIOS.id", ondelete="CASCADE"))
     correo = Column(String)
     direccion = Column(String)
     telefono = Column(String)
@@ -19,6 +19,9 @@ class Incidentes(database.Base):
     prioridad = Column(String)
     estado = Column(String)
     comentarios = Column(String)
+    cliente_relacion = relationship("Usuarios", foreign_keys=[cliente], backref="incidentes_cliente")
+    usuario_relacion = relationship("Usuarios", foreign_keys=[usuario], backref="incidentes_usuario")
+
 
 class GestorTiers(enum.Enum):
     junior = 'junior'

@@ -31,14 +31,38 @@ def get(cliente: Optional[str] = None, usuario: Optional[str] = None, db: Sessio
         incidentes = tasks.getIncidenteByCliente(db=db , client=cliente)
     else :
         incidentes = tasks.getIncidenteByUsuario(db=db , usuario=usuario)
-    return incidentes
+    return [{
+        "fechacreacion": incidente.fechacreacion,
+        "correo": incidente.correo,
+        "telefono": incidente.telefono,
+        "descripcion": incidente.descripcion,
+        "estado": incidente.estado,
+        "id": incidente.id,
+        "cliente": incidente.cliente_relacion,
+        "usuario": incidente.usuario_relacion,
+        "direccion": incidente.direccion,
+        "prioridad": incidente.prioridad,
+        "comentarios": incidente.comentarios
+    } for incidente in incidentes]
 
 @app.get("/incidente/{id}", status_code=status.HTTP_200_OK)
 def get(id:int, db: Session = Depends(database.get_db)):
     incidente = tasks.getById(db=db, id=id)
     if not incidente:
         return utility.get_json_response('E404', 'La incidencia no existe') 
-    return incidente
+    return {
+        "fechacreacion": incidente.fechacreacion,
+        "correo": incidente.correo,
+        "telefono": incidente.telefono,
+        "descripcion": incidente.descripcion,
+        "estado": incidente.estado,
+        "id": incidente.id,
+        "cliente": incidente.cliente_relacion,
+        "usuario": incidente.usuario_relacion,
+        "direccion": incidente.direccion,
+        "prioridad": incidente.prioridad,
+        "comentarios": incidente.comentarios
+    } 
 
 @app.get("/incidentes/ping", status_code=status.HTTP_200_OK)
 def verify_health():
