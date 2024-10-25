@@ -6,7 +6,7 @@ from typing import Optional
 from .database import database
 from .models import models
 from .tasks import tasks
-
+from .utility import utility
 app = FastAPI()
 
 app.add_middleware(
@@ -27,12 +27,46 @@ def root():
 def get(cliente: Optional[str] = None, usuario: Optional[str] = None, db: Session = Depends(database.get_db)):
     if cliente is None and usuario is None:
         incidentes = tasks.get(db=db)
-    elif cliente != '' :
+    elif cliente is not None :
         incidentes = tasks.getIncidenteByCliente(db=db , client=cliente)
     else :
         incidentes = tasks.getIncidenteByUsuario(db=db , usuario=usuario)
-    return incidentes
+    return [{
+        "fechacreacion": incidente.fechacreacion,
+        "correo": incidente.correo,
+        "telefono": incidente.telefono,
+        "descripcion": incidente.descripcion,
+        "estado": incidente.estado,
+        "id": incidente.id,
+        "cliente": incidente.cliente_relacion if incidente.cliente_relacion is not None else '',
+        "usuario": incidente.usuario_relacion if incidente.usuario_relacion is not None else '',
+        "direccion": incidente.direccion,
+        "prioridad": incidente.prioridad,
+        "comentarios": incidente.comentarios,
+        "canal": incidente.canal,
+        "tipo": incidente.tipo
+    } for incidente in incidentes]
 
+@app.get("/incidente/{id}", status_code=status.HTTP_200_OK)
+def get(id:int, db: Session = Depends(database.get_db)):
+    incidente = tasks.getById(db=db, id=id)
+    if not incidente:
+        return utility.get_json_response('E404', 'La incidencia no existe') 
+    return {
+        "fechacreacion": incidente.fechacreacion,
+        "correo": incidente.correo,
+        "telefono": incidente.telefono,
+        "descripcion": incidente.descripcion,
+        "estado": incidente.estado,
+        "id": incidente.id,
+        "cliente": incidente.cliente_relacion if incidente.cliente_relacion is not None else '',
+        "usuario": incidente.usuario_relacion if incidente.usuario_relacion is not None else '',
+        "direccion": incidente.direccion,
+        "prioridad": incidente.prioridad,
+        "comentarios": incidente.comentarios,
+        "canal": incidente.canal,
+        "tipo": incidente.tipo
+    } 
 
 @app.get("/incidentes/ping", status_code=status.HTTP_200_OK)
 def verify_health():
