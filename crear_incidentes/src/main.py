@@ -71,6 +71,29 @@ def edit(id:int, incidente: schemas.Incidentes = Body(default=None), db: Session
             "comentarios": new_incidente.comentarios,
         }
 
+@app.post("/incidente/email", status_code=status.HTTP_201_CREATED)
+def createEmail(incidente: schemas.IncidenteEmail = Body(default=None), db: Session = Depends(database.get_db)):
+    if not incidente:
+        return utility.get_json_response('E422', 'El body de la petición esta vacio')
+    elif not incidente.descripcion or not incidente.estado or not incidente.comentarios:
+        return utility.get_json_response('E400', 'Todos los campos son obligatorios')
+    else:
+        new_incidente: models.Incidentes = tasks.createEmail(db=db, incidente=incidente)
+        return {
+            "id": new_incidente.id,
+            "cliente": new_incidente.cliente,
+            "fechacreacion": new_incidente.fechacreacion,
+            "usuario": new_incidente.usuario,
+            "correo": new_incidente.correo,
+            "direccion": new_incidente.direccion,
+            "telefono": new_incidente.telefono,
+            "descripcion": new_incidente.descripcion,
+            "prioridad": new_incidente.prioridad,
+            "estado": new_incidente.estado,
+            "comentarios": new_incidente.comentarios,
+        }
+
+
 @app.get("/incidentes/ping", status_code=status.HTTP_200_OK)
 def verify_health():
     return {"msg": "Pong"}
