@@ -15,6 +15,8 @@ def create(db: Session, incidente: schemas.Incidentes) -> models.Incidentes:
         prioridad=incidente.prioridad.lower(),
         estado=incidente.estado.lower(),
         comentarios=incidente.comentarios.lower(),
+        canal = incidente.canal.lower(),
+        tipo=incidente.tipo.lower(),
     )
     db.add(incidente)
     db.commit()
@@ -32,6 +34,8 @@ def editar(db: Session, incidente: schemas.Incidentes , id:int) -> models.Incide
     incidente_edit.prioridad = incidente.prioridad
     incidente_edit.estado = incidente.estado
     incidente_edit.comentarios = incidente.comentarios
+    incidente_edit.canal = incidente.canal
+    incidente_edit.tipo = incidente.tipo
     db.commit()
     db.refresh(incidente_edit)
     return incidente_edit
@@ -50,6 +54,8 @@ def createEmail(db: Session, incidente: schemas.IncidenteEmail) -> models.Incide
         prioridad=incidente.prioridad.lower(),
         estado=incidente.estado.lower(),
         comentarios=incidente.comentarios.lower(),
+        canal = incidente.canal.lower(),
+        tipo=incidente.tipo.lower(),
     )
     db.add(incidente)
     db.commit()

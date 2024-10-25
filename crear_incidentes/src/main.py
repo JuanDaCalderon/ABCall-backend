@@ -44,6 +44,8 @@ def create(incidente: schemas.Incidentes = Body(default=None), db: Session = Dep
             "prioridad": new_incidente.prioridad,
             "estado": new_incidente.estado,
             "comentarios": new_incidente.comentarios,
+            "canal": new_incidente.canal,
+            "tipo": new_incidente.tipo
         }
 
 @app.put("/incidentes/{id}", status_code=status.HTTP_201_CREATED)
@@ -69,6 +71,8 @@ def edit(id:int, incidente: schemas.Incidentes = Body(default=None), db: Session
             "prioridad": new_incidente.prioridad,
             "estado": new_incidente.estado,
             "comentarios": new_incidente.comentarios,
+            "canal": new_incidente.canal,
+            "tipo": new_incidente.tipo
         }
 
 @app.post("/incidente/email", status_code=status.HTTP_201_CREATED)
@@ -91,6 +95,8 @@ def createEmail(incidente: schemas.IncidenteEmail = Body(default=None), db: Sess
             "prioridad": new_incidente.prioridad,
             "estado": new_incidente.estado,
             "comentarios": new_incidente.comentarios,
+            "canal": new_incidente.canal,
+            "tipo": new_incidente.tipo
         }
 
 
