@@ -33,11 +33,16 @@ def get(cliente: Optional[str] = None, usuario: Optional[str] = None, db: Sessio
         incidentes = tasks.getIncidenteByUsuario(db=db , usuario=usuario)
     return incidentes
 
-
 @app.get("/incidentes/ping", status_code=status.HTTP_200_OK)
 def verify_health():
     return {"msg": "Pong"}
 
+@app.get("/incidentes/id/{id}", status_code=status.HTTP_200_OK)
+def get_by_id(id: Optional[int] = None, db: Session = Depends(database.get_db)):
+    incidente = tasks.getIncidenteById(db=db, id=id);
+    if incidente is None:
+        return {"msg": "Incidencia no encontrado"}
+    return incidente
 
 @app.delete("/incidentes/reset", status_code=status.HTTP_200_OK)
 def reset(db: Session = Depends(database.get_db)):
