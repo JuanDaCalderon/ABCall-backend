@@ -83,6 +83,20 @@ services:
         condition: service_healthy
     networks:
       - app_net
+  email:
+    container_name: email
+    build: ./email-reader
+    environment:
+      EMAIL: "miso.proyfinal.g1@gmail.com"
+      PASSWORD: "kiwt syiq cdxq ybrb"
+      SERVER: "imap.gmail.com"
+      TRIGGER: "[INCIDENTE]"
+      CREAR_INCIDENTE_ENDPOINT: "http://crear_incidentes:8000/incidente/email"  
+    depends_on:
+      incidentes_db:
+        condition: service_healthy
+    networks:
+      - app_net
 networks:
   app_net:
    driver: bridge
