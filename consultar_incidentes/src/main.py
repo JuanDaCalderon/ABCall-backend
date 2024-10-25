@@ -38,8 +38,8 @@ def get(cliente: Optional[str] = None, usuario: Optional[str] = None, db: Sessio
         "descripcion": incidente.descripcion,
         "estado": incidente.estado,
         "id": incidente.id,
-        "cliente": incidente.cliente_relacion,
-        "usuario": incidente.usuario_relacion,
+        "cliente": incidente.cliente_relacion if incidente.cliente_relacion is not None else '',
+        "usuario": incidente.usuario_relacion if incidente.usuario_relacion is not None else '',
         "direccion": incidente.direccion,
         "prioridad": incidente.prioridad,
         "comentarios": incidente.comentarios
@@ -57,8 +57,8 @@ def get(id:int, db: Session = Depends(database.get_db)):
         "descripcion": incidente.descripcion,
         "estado": incidente.estado,
         "id": incidente.id,
-        "cliente": incidente.cliente_relacion,
-        "usuario": incidente.usuario_relacion,
+        "cliente": incidente.cliente_relacion if incidente.cliente_relacion is not None else '',
+        "usuario": incidente.usuario_relacion if incidente.usuario_relacion is not None else '',
         "direccion": incidente.direccion,
         "prioridad": incidente.prioridad,
         "comentarios": incidente.comentarios

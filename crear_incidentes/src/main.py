@@ -28,7 +28,7 @@ def root():
 def create(incidente: schemas.Incidentes = Body(default=None), db: Session = Depends(database.get_db)):
     if not incidente:
         return utility.get_json_response('E422', 'El body de la petición esta vacio')
-    elif not incidente.descripcion or not incidente.estado or not incidente.fechacreacion or not incidente.cliente or not incidente.usuario or not incidente.comentarios:
+    elif not incidente.descripcion or not incidente.estado or not incidente.cliente or not incidente.usuario or not incidente.comentarios:
         return utility.get_json_response('E400', 'Todos los campos son obligatorios')
     else:
         new_incidente: models.Incidentes = tasks.create(db=db, incidente=incidente)
@@ -46,6 +46,30 @@ def create(incidente: schemas.Incidentes = Body(default=None), db: Session = Dep
             "comentarios": new_incidente.comentarios,
         }
 
+@app.put("/incidentes/{id}", status_code=status.HTTP_201_CREATED)
+def edit(id:int, incidente: schemas.Incidentes = Body(default=None), db: Session = Depends(database.get_db)):
+    incidenteEdit = tasks.getById(db=db, id=id)
+    if not incidente:
+        return utility.get_json_response('E422', 'El body de la petición esta vacio')
+    elif not incidente.descripcion or not incidente.estado or not incidente.cliente or not incidente.usuario or not incidente.comentarios:
+        return utility.get_json_response('E400', 'Todos los campos son obligatorios')
+    elif not incidenteEdit :
+        return utility.get_json_response('E404', 'El incidente no existe')
+    else:
+        new_incidente: models.Incidentes = tasks.editar(db=db, incidente=incidente , id=id)
+        return {
+            "id": new_incidente.id,
+            "cliente": new_incidente.cliente,
+            "usuario": new_incidente.usuario,
+            "fechacreacion": new_incidente.fechacreacion,
+            "correo": new_incidente.correo,
+            "direccion": new_incidente.direccion,
+            "telefono": new_incidente.telefono,
+            "descripcion": new_incidente.descripcion,
+            "prioridad": new_incidente.prioridad,
+            "estado": new_incidente.estado,
+            "comentarios": new_incidente.comentarios,
+        }
 
 @app.post("/incidente/email", status_code=status.HTTP_201_CREATED)
 def createEmail(incidente: schemas.IncidenteEmail = Body(default=None), db: Session = Depends(database.get_db)):

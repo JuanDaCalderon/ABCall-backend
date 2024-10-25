@@ -1,8 +1,9 @@
 import enum
 import uuid
-from sqlalchemy import BigInteger, Column, String, DateTime, ForeignKey, DateTime, Enum, Table
+from sqlalchemy import BigInteger, Column, String, DateTime, ForeignKey, DateTime, Enum, Table, func
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship, mapped_column
+from datetime import datetime
 from ..database import database
 
 
@@ -10,7 +11,7 @@ class Incidentes(database.Base):
     __tablename__ = "INCIDENTES"
     id = Column(BigInteger, primary_key=True, autoincrement=True)
     cliente = Column(UUID(as_uuid=True), ForeignKey("USUARIOS.id", ondelete="CASCADE"))
-    fechacreacion = Column(DateTime)
+    fechacreacion = Column(DateTime, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     usuario = Column(UUID(as_uuid=True), ForeignKey("USUARIOS.id", ondelete="CASCADE"))
     correo = Column(String)
     direccion = Column(String)
