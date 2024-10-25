@@ -42,7 +42,9 @@ def get(cliente: Optional[str] = None, usuario: Optional[str] = None, db: Sessio
         "usuario": incidente.usuario_relacion if incidente.usuario_relacion is not None else '',
         "direccion": incidente.direccion,
         "prioridad": incidente.prioridad,
-        "comentarios": incidente.comentarios
+        "comentarios": incidente.comentarios,
+        "canal": incidente.canal,
+        "tipo": incidente.tipo
     } for incidente in incidentes]
 
 @app.get("/incidente/{id}", status_code=status.HTTP_200_OK)
@@ -61,7 +63,9 @@ def get(id:int, db: Session = Depends(database.get_db)):
         "usuario": incidente.usuario_relacion if incidente.usuario_relacion is not None else '',
         "direccion": incidente.direccion,
         "prioridad": incidente.prioridad,
-        "comentarios": incidente.comentarios
+        "comentarios": incidente.comentarios,
+        "canal": incidente.canal,
+        "tipo": incidente.tipo
     } 
 
 @app.get("/incidentes/ping", status_code=status.HTTP_200_OK)

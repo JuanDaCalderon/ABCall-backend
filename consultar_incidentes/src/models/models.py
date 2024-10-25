@@ -19,6 +19,8 @@ class Incidentes(database.Base):
     prioridad = Column(String)
     estado = Column(String)
     comentarios = Column(String)
+    canal = Column(String)
+    tipo = Column(String)
     cliente_relacion = relationship("Usuarios", foreign_keys=[cliente], backref="incidentes_cliente")
     usuario_relacion = relationship("Usuarios", foreign_keys=[usuario], backref="incidentes_usuario")
 

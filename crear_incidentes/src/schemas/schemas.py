@@ -12,7 +12,8 @@ class Incidentes(BaseModel):
     prioridad: Union[str, None] = None
     estado: Union[str, None] = None
     comentarios: Union[str, None] = None
-
+    canal: Union[str, None] = None
+    tipo: Union[str, None] = None
     class Config:
         from_attributes = True
 
@@ -25,6 +26,7 @@ class IncidenteEmail(BaseModel):
     prioridad: Union[str, None] = None
     estado: Union[str, None] = None
     comentarios: Union[str, None] = None
-
+    canal: Union[str, None] = None
+    tipo: Union[str, None] = None
     class Config:
         from_attributes = True
