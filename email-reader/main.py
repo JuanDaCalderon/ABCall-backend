@@ -46,7 +46,9 @@ while not done:
                 requestBody = {
                     "correo": correo,
                     "prioridad": "media",
-                    "estado": "abierto"
+                    "estado": "abierto",
+                    "canal": "email",
+                    "tipo": "incidente"
                 }
                 for property in data:
                     prop = property.replace("[", "").replace("]", "")
