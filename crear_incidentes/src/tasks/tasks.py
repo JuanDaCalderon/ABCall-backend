@@ -24,6 +24,23 @@ def create(db: Session, incidente: schemas.Incidentes) -> models.Incidentes:
     return incidente
 
 
+def createEmail(db: Session, incidente: schemas.IncidenteEmail) -> models.Incidentes:
+    incidente = models.Incidentes(
+        fechacreacion=datetime.today(),
+        correo=incidente.correo.lower(),
+        direccion=incidente.direccion.lower(),
+        telefono=incidente.telefono.lower(),
+        descripcion=incidente.descripcion.lower(),
+        prioridad=incidente.prioridad.lower(),
+        estado=incidente.estado.lower(),
+        comentarios=incidente.comentarios.lower(),
+    )
+    db.add(incidente)
+    db.commit()
+    db.refresh(incidente)
+    return incidente
+
+
 def reset_db(db: Session):
     db.query(models.Incidentes).delete()
     db.commit()
