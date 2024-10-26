@@ -5,10 +5,11 @@ from ..schemas import schemas
 
 
 def create(db: Session, incidente: schemas.Incidentes) -> models.Incidentes:
+    gestor : models.Usuarios = db.query(models.Usuarios).filter(models.Usuarios.roleid == 3 and models.Usuarios.gestortier == 'junior').first()
     incidente = models.Incidentes(
         cliente=incidente.cliente,
         usuario=incidente.usuario,
-        gestor = incidente.gestor,
+        gestor = incidente.gestor if incidente.gestor != '' else gestor.id,
         correo=incidente.correo.lower(),
         direccion=incidente.direccion.lower(),
         telefono=incidente.telefono.lower(),
