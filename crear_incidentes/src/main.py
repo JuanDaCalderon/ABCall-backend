@@ -34,10 +34,10 @@ def create(incidente: schemas.Incidentes = Body(default=None), db: Session = Dep
         new_incidente: models.Incidentes = tasks.create(db=db, incidente=incidente)
         return {
             "id": new_incidente.id,
-            "cliente": new_incidente.cliente,
             "fechacreacion": new_incidente.fechacreacion,
-            "usuario": new_incidente.usuario,
-            "gestor": new_incidente.gestor,
+            "cliente": new_incidente.cliente_relacion if new_incidente.cliente_relacion is not None else '',
+            "usuario": new_incidente.usuario_relacion if new_incidente.usuario_relacion is not None else '',
+            "gestor": new_incidente.gestor_relacion if new_incidente.gestor_relacion is not None else '',
             "correo": new_incidente.correo,
             "direccion": new_incidente.direccion,
             "telefono": new_incidente.telefono,
@@ -62,9 +62,9 @@ def edit(id:int, incidente: schemas.Incidentes = Body(default=None), db: Session
         new_incidente: models.Incidentes = tasks.editar(db=db, incidente=incidente , id=id)
         return {
             "id": new_incidente.id,
-            "cliente": new_incidente.cliente,
-            "usuario": new_incidente.usuario,
-            "gestor": new_incidente.gestor,
+            "cliente": new_incidente.cliente_relacion if new_incidente.cliente_relacion is not None else '',
+            "usuario": new_incidente.usuario_relacion if new_incidente.usuario_relacion is not None else '',
+            "gestor": new_incidente.gestor_relacion if new_incidente.gestor_relacion is not None else '',
             "fechacreacion": new_incidente.fechacreacion,
             "correo": new_incidente.correo,
             "direccion": new_incidente.direccion,
@@ -87,10 +87,10 @@ def createEmail(incidente: schemas.IncidenteEmail = Body(default=None), db: Sess
         new_incidente: models.Incidentes = tasks.createEmail(db=db, incidente=incidente)
         return {
             "id": new_incidente.id,
-            "cliente": new_incidente.cliente,
             "fechacreacion": new_incidente.fechacreacion,
-            "usuario": new_incidente.usuario,
-            "gestor": new_incidente.gestor,
+            "cliente": new_incidente.cliente_relacion if new_incidente.cliente_relacion is not None else '',
+            "usuario": new_incidente.usuario_relacion if new_incidente.usuario_relacion is not None else '',
+            "gestor": new_incidente.gestor_relacion if new_incidente.gestor_relacion is not None else '',
             "correo": new_incidente.correo,
             "direccion": new_incidente.direccion,
             "telefono": new_incidente.telefono,
