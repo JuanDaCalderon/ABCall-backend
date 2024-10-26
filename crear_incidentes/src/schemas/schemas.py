@@ -5,6 +5,7 @@ from pydantic import BaseModel
 class Incidentes(BaseModel):
     cliente: Union[str, None] = None
     usuario: Union[str, None] = None
+    gestor: Union[str, None] = None
     correo: Union[str, None] = None
     direccion: Union[str, None] = None
     telefono: Union[str, None] = None
