@@ -10,6 +10,7 @@ class Incidentes(BaseModel):
     cliente: Union[ClienteSchema, None] = None
     fechacreacion: Union[str, None] = None
     usuario: Union[ClienteSchema, None] = None
+    gestor: Union[ClienteSchema, None] = None
     correo: Union[str, None] = None
     direccion: Union[str, None] = None
     telefono: Union[str, None] = None

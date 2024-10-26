@@ -12,6 +12,7 @@ class Incidentes(database.Base):
     cliente = Column(UUID(as_uuid=True), ForeignKey("USUARIOS.id", ondelete="CASCADE"))
     fechacreacion = Column(DateTime)
     usuario = Column(UUID(as_uuid=True), ForeignKey("USUARIOS.id", ondelete="CASCADE"))
+    gestor = Column(UUID(as_uuid=True), ForeignKey("USUARIOS.id", ondelete="CASCADE"))
     correo = Column(String)
     direccion = Column(String)
     telefono = Column(String)
@@ -23,6 +24,7 @@ class Incidentes(database.Base):
     tipo = Column(String)
     cliente_relacion = relationship("Usuarios", foreign_keys=[cliente], backref="incidentes_cliente")
     usuario_relacion = relationship("Usuarios", foreign_keys=[usuario], backref="incidentes_usuario")
+    gestor_relacion = relationship("Usuarios", foreign_keys=[gestor], backref="incidentes_gestor")
 
 
 class GestorTiers(enum.Enum):

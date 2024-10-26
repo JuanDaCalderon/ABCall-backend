@@ -8,6 +8,7 @@ def create(db: Session, incidente: schemas.Incidentes) -> models.Incidentes:
     incidente = models.Incidentes(
         cliente=incidente.cliente,
         usuario=incidente.usuario,
+        gestor = incidente.gestor,
         correo=incidente.correo.lower(),
         direccion=incidente.direccion.lower(),
         telefono=incidente.telefono.lower(),
@@ -27,6 +28,7 @@ def editar(db: Session, incidente: schemas.Incidentes , id:int) -> models.Incide
     incidente_edit : models.Incidentes = getById(db=db,id=id)
     incidente_edit.cliente = incidente.cliente
     incidente_edit.usuario = incidente.usuario
+    incidente_edit.gestor = incidente.gestor
     incidente_edit.correo = incidente.correo
     incidente_edit.direccion = incidente.direccion
     incidente_edit.telefono = incidente.telefono
