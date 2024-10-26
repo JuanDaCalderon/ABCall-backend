@@ -1,0 +1,50 @@
+version: 0.2
+
+phases:
+  install:
+      runtime-versions:
+        python: 3.9
+      commands:
+        - pip install -r requirements.txt
+  pre_build:
+    commands:
+      - cd email-reader
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 682033469251.dkr.ecr.us-east-1.amazonaws.com
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image... 
+      - docker build -t abcallemail .
+      - docker tag abcallemail:latest 682033469251.dkr.ecr.us-east-1.amazonaws.com/abcallemail:latest
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker image...
+      - docker push 682033469251.dkr.ecr.us-east-1.amazonaws.com/abcallemail:latest
+      - echo Writing Image Definitions file...
+      - printf '[{"name":"Container-app-abcall-email","682033469251.dkr.ecr.us-east-1.amazonaws.com/abcallemail:latest"}]' > imagedefinitions.json
+      - echo moviendo el archivo imagedefinitions.json ...
+      - mv imagedefinitions.json ../imagedefinitions.json
+      - printf '{"ImageURI":"682033469251.dkr.ecr.us-east-1.amazonaws.com/abcallemail:latest"}' > imageDetail.json
+      - echo moviendo el archivo imageDetail.json ...
+      - mv imageDetail.json ../imageDetail.json
+      - cat ../imagedefinitions.json 
+      - echo "TaskDefinition JSON"
+      - cp taskdef.json ../taskdef.json
+      - echo "Copying appspec.yaml"
+      - cp appspec.yaml ../appspec.yaml 
+artifacts:
+  files:
+    - '**/*'
+    - imagedefinitions.json
+    - imageDetail.json
+  secondary-artifacts:
+    DefinitionArtifact:
+      base-directory: email-reader
+      files:
+        - appspec.yaml
+        - taskdef.json
+    ImageArtifact:
+      files:
+        - imageDetail.json
