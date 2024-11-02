@@ -71,6 +71,7 @@ def getAllUsuarios(db: Session = Depends(database.get_db)):
                 "direccion": user.direccion,
                 "fechacreacion": user.fechacreacion,
                 "rol": user.roles,
+                "gestortier":user.gestortier
             } for user in usuarios]
 
 @app.get("/usuarios/{role_id}", status_code=status.HTTP_200_OK)
@@ -89,6 +90,7 @@ def getAllUsuarios(role_id:int, db: Session = Depends(database.get_db)):
                 "direccion": user.direccion,
                 "fechacreacion": user.fechacreacion,
                 "rol": user.roles,
+                "gestortier":user.gestortier
             } for user in usuarios]
 
 
