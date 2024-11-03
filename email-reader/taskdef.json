@@ -1,0 +1,48 @@
+{
+    "executionRoleArn": "arn:aws:iam::682033469251:role/ecsTaskExecutionRole",
+    "containerDefinitions": [
+      {
+        "portMappings": [
+          {
+            "hostPort": 8004,
+            "protocol": "tcp",
+            "containerPort": 8004
+          }
+        ],
+
+        "image": "<IMAGE1_NAME>",
+        "essential": true,
+        "environment": [
+          {
+              "name": "EMAIL",
+              "value": "miso.proyfinal.g1@gmail.com"
+          },
+          {
+              "name": "PASSWORD",
+              "value": "kiwt syiq cdxq ybrb"
+          },
+          {
+              "name": "SERVER",
+              "value": "imap.gmail.com"
+          },
+          {
+              "name": "TRIGGER",
+              "value": "[INCIDENTE]"
+          },
+          {
+              "name": "CREAR_INCIDENTE_ENDPOINT",
+              "value": "http://bl-app-abcall-1267046842.us-east-1.elb.amazonaws.com:8000/incidente/email"
+          }
+      ],
+        "name": "Container-app-abcall-email"
+      }
+    ],
+
+    "requiresCompatibilities": [
+      "FARGATE"
+    ],
+    "networkMode": "awsvpc",
+    "cpu": "256",
+    "memory": "512",
+    "family": "task-app-abcall-email"
+  }
