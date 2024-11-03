@@ -43,6 +43,7 @@ def findPermisoById(db: Session, permiso_id:int)->models.Roles:
     return permiso if permiso else False
 
 def associatePermisosToRole(db: Session,role: models.Roles, permisos: schemas.PermisoUpdate) -> models.Roles:
+    role.permisos.clear()
     for permiso_data in permisos.permisos:
         permiso = findPermisoById(db=db,permiso_id=permiso_data.id)
         if permiso not in role.permisos:
