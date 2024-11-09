@@ -8,25 +8,25 @@ phases:
         - pip install -r requirements.txt
   pre_build:
     commands:
-      - cd usuarios
+      - cd textos_cliente
       - echo Logging in to Amazon ECR...
       - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 682033469251.dkr.ecr.us-east-1.amazonaws.com
   build:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image... 
-      - docker build -t abcallusuarios .
-      - docker tag abcallusuarios:latest 682033469251.dkr.ecr.us-east-1.amazonaws.com/abcallusuarios:latest
+      - docker build -t abcalltextos .
+      - docker tag abcalltextos:latest 682033469251.dkr.ecr.us-east-1.amazonaws.com/abcalltextos:latest
   post_build:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker image...
-      - docker push 682033469251.dkr.ecr.us-east-1.amazonaws.com/abcallusuarios:latest
+      - docker push 682033469251.dkr.ecr.us-east-1.amazonaws.com/abcalltextos:latest
       - echo Writing Image Definitions file...
-      - printf '[{"name":"Container-app-abcall-usuarios","682033469251.dkr.ecr.us-east-1.amazonaws.com/abcallusuarios:latest"}]' > imagedefinitions.json
+      - printf '[{"name":"Container-app-abcall-texto","682033469251.dkr.ecr.us-east-1.amazonaws.com/abcalltextos:latest"}]' > imagedefinitions.json
       - echo moviendo el archivo imagedefinitions.json ...
       - mv imagedefinitions.json ../imagedefinitions.json
-      - printf '{"ImageURI":"682033469251.dkr.ecr.us-east-1.amazonaws.com/abcallusuarios:latest"}' > imageDetail.json
+      - printf '{"ImageURI":"682033469251.dkr.ecr.us-east-1.amazonaws.com/abcalltextos:latest"}' > imageDetail.json
       - echo moviendo el archivo imageDetail.json ...
       - mv imageDetail.json ../imageDetail.json
       - cat ../imagedefinitions.json 
@@ -41,7 +41,7 @@ artifacts:
     - imageDetail.json
   secondary-artifacts:
     DefinitionArtifact:
-      base-directory: usuarios
+      base-directory: textos_cliente
       files:
         - appspec.yaml
         - taskdef.json
