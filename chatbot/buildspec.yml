@@ -15,18 +15,18 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image... 
-      - docker build -t abcallia .
-      - docker tag abcallia:latest 682033469251.dkr.ecr.us-east-1.amazonaws.com/abcallia:latest
+      - docker build -t abcallchatbot .
+      - docker tag abcallchatbot:latest 682033469251.dkr.ecr.us-east-1.amazonaws.com/abcallchatbot:latest
   post_build:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker image...
-      - docker push 682033469251.dkr.ecr.us-east-1.amazonaws.com/abcallia:latest
+      - docker push 682033469251.dkr.ecr.us-east-1.amazonaws.com/abcallchatbot:latest
       - echo Writing Image Definitions file...
-      - printf '[{"name":"Container-app-abcall-ia","682033469251.dkr.ecr.us-east-1.amazonaws.com/abcallia:latest"}]' > imagedefinitions.json
+      - printf '[{"name":"Container-app-abcall-chatbot","682033469251.dkr.ecr.us-east-1.amazonaws.com/abcallchatbot:latest"}]' > imagedefinitions.json
       - echo moviendo el archivo imagedefinitions.json ...
       - mv imagedefinitions.json ../imagedefinitions.json
-      - printf '{"ImageURI":"682033469251.dkr.ecr.us-east-1.amazonaws.com/abcallia:latest"}' > imageDetail.json
+      - printf '{"ImageURI":"682033469251.dkr.ecr.us-east-1.amazonaws.com/abcallchatbot:latest"}' > imageDetail.json
       - echo moviendo el archivo imageDetail.json ...
       - mv imageDetail.json ../imageDetail.json
       - cat ../imagedefinitions.json 
