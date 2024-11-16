@@ -19,17 +19,17 @@ app.add_middleware(
 def root():
     return RedirectResponse(url="/docs/")
 
-@app.get("/iagenerativa/ping", status_code=status.HTTP_200_OK)
+@app.get("/chatbot/ping", status_code=status.HTTP_200_OK)
 def verify_health():
     return {"msg": "Pong"}
 
 
-@app.post("/ia/generativa", status_code=status.HTTP_201_CREATED)
-def generate(description: str):
-    if not description:
-        return utility.get_json_response('E422', 'La descripcion es boligatoria')
+@app.post("/chatbot", status_code=status.HTTP_201_CREATED)
+def generate(opcion: str):
+    if not opcion:
+        return utility.get_json_response('E422', 'La opcion es boligatoria')
     else:
-        respuesta:str= tasks.generar_respuesta(description)
+        respuesta:str= tasks.generar_respuesta(opcion)
         return {
             "respuesta": respuesta
         }

@@ -123,6 +123,16 @@ services:
         condition: service_healthy
     networks:
       - app_net
+  chatbot:
+    container_name: chatbot
+    build: ./chatbot
+    ports:
+      - 8007:8007
+    depends_on:
+      incidentes_db:
+        condition: service_healthy
+    networks:
+      - app_net
 networks:
   app_net:
    driver: bridge
