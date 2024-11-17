@@ -10,6 +10,10 @@ def get_textos_by_id(db: Session, id:int):
     textos = db.query(models.Textos).filter(models.Textos.id== id).first()
     return textos if textos else False
 
+def get_textos_by_idcliente(db: Session, idcliente:int):
+    textos = db.query(models.Textos).filter(models.Textos.clienteid == idcliente).first()
+    return textos if textos else False
+
 def create_texto(db: Session, texto: schemas.texto) -> models.Textos:
     cliente:models.Usuarios = db.query(models.Usuarios).filter(models.Usuarios.id == texto.clienteid).first()
     new_texto = models.Textos(

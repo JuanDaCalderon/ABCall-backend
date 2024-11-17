@@ -59,6 +59,19 @@ def getTextoById(texto_id:int, db: Session = Depends(database.get_db)):
                 "cierre": texto.cierre,
                 "cliente": texto.usuario,
             } 
+        
+@app.get("/texto/cliente/{clienteid}", status_code=status.HTTP_200_OK)
+def getTextoByIdCliente(clienteid:str, db: Session = Depends(database.get_db)):
+    texto = tasks.get_textos_by_idcliente(db=db, idcliente=clienteid)
+    if not texto:
+        return utility.get_json_response('E404', 'Texto no Existe')
+    else:
+        return {
+                "id": texto.id,
+                "saludo": texto.saludo,
+                "cierre": texto.cierre,
+                "cliente": texto.usuario,
+            } 
 
 @app.put("/texto", status_code=status.HTTP_200_OK)
 def updateTexto( texto: schemas.textoUpdate = Body(default=None),db: Session = Depends(database.get_db)):
