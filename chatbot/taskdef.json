@@ -1,0 +1,26 @@
+{
+    "executionRoleArn": "arn:aws:iam::682033469251:role/ecsTaskExecutionRole",
+    "containerDefinitions": [
+      {
+        "portMappings": [
+          {
+            "hostPort": 8007,
+            "protocol": "tcp",
+            "containerPort": 8007
+          }
+        ],
+
+        "image": "<IMAGE1_NAME>",
+        "essential": true,
+        "name": "Container-app-abcall-chatbot"
+      }
+    ],
+
+    "requiresCompatibilities": [
+      "FARGATE"
+    ],
+    "networkMode": "awsvpc",
+    "cpu": "256",
+    "memory": "512",
+    "family": "task-app-abcall-chatbot"
+  }
